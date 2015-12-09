@@ -67,35 +67,61 @@ public:
     }
 
     void processPlus() {
-        if (atom->index == -2) {
-                int value = atom->next->index;
-                if (value == atom->last->index) {
-                    deleteAtom(atom->last);
-                    deleteAtom(atom->next);
-                    atom->index = value + 1;
-                }
+        if (atom->index == -2){
+            while (true) {
+                if(atom->last != atom->next) {
+                    cout << "11" << endl;
 
+                    int value = atom->next->index;
+
+                    cout << atom->last->index << " " << value << endl;
+
+                    if (value == atom->last->index) {
+                        if (atom->index != -2)
+                            value = atom->index;
+                        deleteAtomLastNext();
+                        atom->index = value + 1;
+                    }
+                    else break;
+                }
+                else break;
+
+            }
         }
+
+
     }
 
-    void deleteAtom(Atom *atom) {
-        if (atom != nullptr) {
-//            atom->next->last = atom->last;
-//            atom->last->next = atom->next;
-//            free(atom);
-            Atom *temp = atom;
-            atom = atom -> last;
-            temp->next = atom->next;
-            temp->next->last = atom;
-            free(temp);
+    void deleteAtomLastNext() {
+        if (atom->next->next == atom->last->last) {
+            free(atom->next);
+            free(atom->last);
+            atom->next = nullptr;
+            atom->last = nullptr;
         }
+        else {
+            Atom *atom = this->atom->last;
+            if (atom != nullptr) {
+                atom->next->last = atom->last;
+                atom->last->next = atom->next;
+                free(atom);
+            }
+            atom = this->atom->next;
+            if (atom != nullptr) {
+                atom->next->last = atom->last;
+                atom->last->next = atom->next;
+                free(atom);
+            }
+        }
+
+    }
 //
 //        Atom *temp = atom;
 //        atom = atom -> last;
 //        temp->next->last = temp->last;
 //        temp->last->next = temp->next;
 //        free(temp);
-    }
+
 
     void forward() {
         if (atom->next != 0)

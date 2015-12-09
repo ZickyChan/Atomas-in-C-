@@ -1,23 +1,55 @@
-#include <iostream>
-#include "AtomRing.h"
+//#include <iostream>
+//#include <SFML>
+//#include "AtomRing.h"
+//
+//using namespace std;
+//
+//int main() {
+//    AtomRing ring = AtomRing();
+//
+//    ring.addAtom(2);
+//    ring.addAtom(1);
+//    ring.addAtom(1);
+//    ring.addAtom(1);
+//    ring.addAtom(1);
+//    ring.addAtom(1);
+//
+//    ring.addAtom(2);
+//
+//    ring.addAtom(-2);
+//
+//    ring.processPlus();
+//
+//    Atom *atom = ring.getAtom();
+//
+//
+//
+//    cout << atom->index ;
+//
+//    return 0;
+//}
 
-using namespace std;
+#include <SFML/Graphics.hpp>
 
-int main() {
-    AtomRing ring = AtomRing();
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
 
-    Atom *atom = ring.getAtom();
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
 
-
-    ring.addAtom(1);
-    ring.addAtom(1);
-    ring.addAtom(1);
-    ring.addAtom(1);
-    ring.addAtom(-2);
-
-
-
-    cout << atom->next->index << atom->index << atom->last->index;
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
 
     return 0;
 }
