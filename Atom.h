@@ -150,8 +150,6 @@ public:
     }
 private:
     struct node *start;
-
-
 };
 
 
