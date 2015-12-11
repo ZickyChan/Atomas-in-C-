@@ -14,9 +14,10 @@ struct node {
     struct node *next;
 };
 
+
 class Atom {
 public:
-    void addAdtomLast(int value){
+    void addAdtomLast(int value) {
         struct node *s, *temp;
         temp = new(struct node);
         temp->value = value;
