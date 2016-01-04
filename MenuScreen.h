@@ -62,17 +62,17 @@ public:
                 if (event.type == sf::Event::MouseButtonPressed) {
                     if (event.mouseButton.button == sf::Mouse::Left) {
                         cout<< "mouse position x: " << event.mouseButton.x << " mouse position y: " <<event.mouseButton.y <<endl;
-                        cout<< "text position x: " << player_1.getPosition().x << " text position y: " <<player_1.getPosition().y <<endl;
-                        cout << "end point position x: " << player_1.getPosition().x + player1Rect.width <<"  end point position y: "<< player_1.getPosition().y + player1Rect.height <<endl;
+                        cout<< "text position x: " << (player_1.getPosition().x - player1Rect.width/2.0f) << " text position y: " <<player_1.getPosition().y <<endl;
+                        cout << "end point position x: " << player_1.getPosition().x + player1Rect.width/2.0f <<"  end point position y: "<< player_1.getPosition().y + player1Rect.height <<endl;
 
 
-                        if((event.mouseButton.x >= player_1.getPosition().x) && (event.mouseButton.x <= (player_1.getPosition().x + player1Rect.width))
-                                && (event.mouseButton.y >= player_1.getPosition().y) && (event.mouseButton.y <= (player_1.getPosition().y + player1Rect.height))){
+                        if((event.mouseButton.x >= (player_1.getPosition().x - player1Rect.width/2.0f)) && (event.mouseButton.x <= (player_1.getPosition().x + player1Rect.width/2.0f))
+                                && (event.mouseButton.y >= player_1.getPosition().y - player1Rect.height/2.0f) && (event.mouseButton.y <= (player_1.getPosition().y + player1Rect.height/2.0f))){
                             return 1;
 
                         }
                         else{
-                            cout << "wrong" << endl;
+                            cout << "wrong menu" << endl;
                         }
                     }
                 }
