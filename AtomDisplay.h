@@ -9,11 +9,11 @@
 class AtomDisplay:sf::CircleShape {
 public:
     AtomDisplay(int val): value{val}{
-        // Declare and load a font
         setColor();
     }
     AtomDisplay(const AtomDisplay &a){
         value = a.value;
+        setColor();
     }
 
     void setPosition(float x, float y){

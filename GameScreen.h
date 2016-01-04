@@ -35,21 +35,31 @@ int GameScreen::Run(sf::RenderWindow &window) {
     outsideCircle.setPosition(320,184);
 
     //Set the format and position for inside circle
-    insideCircle.setFillColor(sf::Color::Blue);
+    insideCircle.setFillColor(sf::Color::Transparent);
     insideCircle.setPosition(350,214);
     insideCircle.setPointCount(numPoints);
 
     //Set position for the center point
     centerPoint.setPosition(480,344);
 
-    //Set the value and position for the atoms in the ring
+    cout << "points: "<<insideCircle.getPointCount() << endl;
+
+    //Add number of elements into the vecor
     for (int i=0;i<insideCircle.getPointCount();i++){
-        AtomDisplay shape{1};
-        sf::Vector2f position = insideCircle.getPoint(i);
-        shape.setPosition(position.x+330,position.y+194);
-        //shape.setOrigin({150,150});
+        randNum = rand()%(max-min + 1) + min;
+        AtomDisplay shape{randNum};
         atoms.push_back(shape);
     }
+
+    //Set position for each atom
+    for (int i=0;i<insideCircle.getPointCount();i++){
+        sf::Vector2f position = insideCircle.getPoint(i);
+        atoms[i].setPosition(position.x+330,position.y+194);
+        atoms[i].setColor();
+    }
+
+
+
 
 
     while (window.isOpen()) {
@@ -152,7 +162,7 @@ int GameScreen::Run(sf::RenderWindow &window) {
 
         window.clear(sf::Color::Black);
         window.draw(outsideCircle);
-        window.draw(insideCircle);
+       // window.draw(insideCircle);
         centerPoint.draw1(window);
         //centerPoint.draw1(window);
         for (int i = 0; i < atoms.size(); i++) {
