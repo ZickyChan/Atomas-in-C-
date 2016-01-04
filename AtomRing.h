@@ -1,12 +1,11 @@
-//
-// Created by Mike Bui on 09/12/2015.
-//
-
 #ifndef ATOMAS_ATOMRING_H
 #define ATOMAS_ATOMRING_H
 
 #include <iostream>
 #include <list>
+
+using namespace std;
+
 
 typedef struct atom {
     int index;
@@ -14,82 +13,104 @@ typedef struct atom {
     struct atom *last;
 } Atom;
 
-
-
-using namespace std;
-
 class AtomRing {
 public:
-    int getSize() {
-        if (atom == nullptr)
-            return 0;
-        if (atom->next == nullptr)
-            return 1;
-        Atom *start = atom;
-        Atom *current = start->next;
-        int count = 0;
-        while (current->next != start) {
-            current = current->next;
-            count++;
-        }
-        return count;
+    AtomRing() {
+        atom = nullptr;
     }
 
+    int getSize() {
+        return size;
+    }
 
+    int getMaxAtom() {
+        int max = 0;
+        Atom *current = atom;
+        for (int i = 0; i < size; i++) {
+            if (current->index > max)
+                max = current->index;
+            current = current->next;
+        }
+        return max;
+    }
+
+    void addAtom(Atom *atom) {
+        if (this->atom == nullptr) {
+            this->atom = atom;
+        }
+        else if (this->atom->next == nullptr) {
+            this->atom->next = atom;
+            this->atom->last = atom;
+            atom->last = this->atom;
+            atom->next = this->atom;
+        }
+        else {
+            atom->last = this->atom;
+            atom->next = this->atom->next;
+            this->atom->next->last = atom;
+            this->atom->next = atom;
+        }
+        size++;
+        forward();
+    }
 
     void addAtom(int value) {
         Atom *atom = new Atom();
         atom->index = value;
         atom->next = nullptr;
         atom->last = nullptr;
-
-        if (this->atom == nullptr) {
-            this->atom = atom;
-        }
-        else if (this->atom->next == nullptr) {
-            this->atom->next = atom;
-            atom->last = this->atom;
-            this->atom->last = atom;
-            atom->next = this->atom;
-        }
-
-        else {
-            atom->next = this->atom->next;
-            atom->last = this->atom;
-            this->atom->next->last = atom;
-            this->atom->next = atom;
-        }
-        forward();
+        addAtom(atom);
     }
+
 
     Atom *getAtom() {
         return atom;
     }
 
-    void processPlus() {
-        if (atom->index == -2){
-            while (true) {
-                if(atom->last != atom->next) {
-                    cout << "11" << endl;
+    void setAtom(int index) {
+        atom->index = index;
+    }
 
-                    int value = atom->next->index;
+    void addToAtom(int delta) {
+        atom->index += delta;
+    }
 
-                    cout << atom->last->index << " " << value << endl;
 
-                    if (value == atom->last->index) {
-                        if (atom->index != -2)
-                            value = atom->index;
-                        deleteAtomLastNext();
-                        atom->index = value + 1;
-                    }
-                    else break;
-                }
-                else break;
-
+    int deleteAtom() {
+        int index = -2;
+        if (forward()) {
+            index = atom->index;
+            if (atom->next->next != atom) {
+                atom->last->last->next = atom;
+                Atom *temp = atom->last;
+                atom->last = atom->last->last;
+                free(temp);
             }
+            else {
+                free(atom->next);
+                atom->next = nullptr;
+                atom->last = nullptr;
+            }
+            size--;
         }
+        return index;
+    }
 
+    int deleteLastAtom() {
+        if (back()) {
+            return deleteAtom();
+        }
+        return -2;
+    }
 
+    int deleteNextAtom() {
+        int index = -2;
+        if (forward()) {
+            index = atom->index;
+            deleteAtom();
+            back();
+        }
+        return index;
     }
 
     void deleteAtomLastNext() {
@@ -113,29 +134,42 @@ public:
                 free(atom);
             }
         }
-
     }
-//
-//        Atom *temp = atom;
-//        atom = atom -> last;
-//        temp->next->last = temp->last;
-//        temp->last->next = temp->next;
-//        free(temp);
 
-
-    void forward() {
-        if (atom->next != 0)
+    bool forward() {
+        if (atom->next != nullptr) {
             atom = atom->next;
+            return true;
+        }
+        return false;
     }
-    void back() {
-        if (atom->last != 0)
+
+    bool back() {
+        if (atom->last != nullptr) {
             atom = atom->last;
+            return true;
+        }
+        return false;
+    }
+
+    void printRing() {
+        if (atom != nullptr) {
+            Atom *current = atom;
+            cout << "Ring: ";
+            for (int i = 0; i < size; i++) {
+                if (atom == current)
+                    cout << "*" << current->index << "* ";
+                else
+                    cout << current->index << " ";
+                current = current->next;
+            }
+            cout << endl;
+        }
     }
 
 private:
     Atom *atom;
-    Atom *start;
+    int size;
 };
-
 
 #endif //ATOMAS_ATOMRING_H
