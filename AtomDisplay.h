@@ -8,10 +8,10 @@
 
 class AtomDisplay:sf::CircleShape {
 public:
-    AtomDisplay(int val): value{val}{
+    AtomDisplay(int val, float radius): value{val},c{radius}{
         setColor();
     }
-    AtomDisplay(const AtomDisplay &a){
+    AtomDisplay(const AtomDisplay &a): c{a.c.getRadius()}{
         value = a.value;
         setColor();
     }
@@ -32,12 +32,20 @@ public:
         }
     }
 
+    const sf::Vector2f& getCirclePosition(){
+        return c.getPosition();
+    }
+
+    void move(float x, float y){
+        c.move(x,y);
+        text.setPosition(c.getPosition().x+14,c.getPosition().y);
+    }
 
     void draw1(sf::RenderWindow &w){
         sf::Font font;
         font.loadFromFile("coolvetica rg.ttf");
         text.setFont(font);
-        text.setColor(sf::Color::Black);
+        text.setColor(sf::Color::White);
         text.setCharacterSize(30);
         text.setString(std::to_string(value));
         w.draw(c);
@@ -54,7 +62,7 @@ public:
 //    }
 private:
     int value;
-    sf::CircleShape c{20};
+    sf::CircleShape c;
     sf::Text text;
 };
 

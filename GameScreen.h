@@ -11,9 +11,10 @@
 
 using namespace std;
 
-//This equation is used to find the root of the equation of a circle and return a pointer of integer results
+
+//This equation is used to find the roots of the quadratic equation and return a pointer of integer results
 //The equation is ax^2 + bx + c =0, type is used to identify Y or X value will be return
-float* rootOfEquation(float a, float b, float c){
+/*float* rootOfEquation(float a, float b, float c){
     float determinant = b*b - 4*a*c;
     float x1,x2;
     float *result = new float[2];
@@ -38,11 +39,12 @@ float* rootOfEquation(float a, float b, float c){
         result[1] = -1000;
     }
     return result;
-}
+} */
+
 
 class GameScreen: public Screen{
 public:
-    GameScreen():numPoints{2},min{1},max{3},randNum{rand()%(max-min + 1) + min},centerPoint{randNum},outsideCircle(180),insideCircle(150){    }
+    GameScreen():numPoints{2},min{1},max{3},randNum{rand()%(max-min + 1) + min},centerPoint{randNum,20},outsideCircle(180),insideCircle(150){    }
     virtual int Run(sf::RenderWindow &window);
 
 private:
@@ -83,7 +85,7 @@ int GameScreen::Run(sf::RenderWindow &window) {
     //Add number of elements into the vecor
     for (int i=0;i<insideCircle.getPointCount();i++){
         randNum = rand()%(max-min + 1) + min;
-        AtomDisplay shape{randNum};
+        AtomDisplay shape{randNum,20};
         atoms.push_back(shape);
     }
 
@@ -141,7 +143,7 @@ int GameScreen::Run(sf::RenderWindow &window) {
 
                             cout << " b: " << b << " c: " << c << endl;
 
-                            float *roots = rootOfEquation(1,b,c);
+                            float *roots;// = rootOfEquation(1,b,c);
 
                             cout << "root: " <<roots[0] << " root 1: " << roots[1] << endl;
 
@@ -260,6 +262,7 @@ int GameScreen::Run(sf::RenderWindow &window) {
                         for (int i = 0; i < insideCircle.getPointCount(); i++) {
                             sf::Vector2f position = insideCircle.getPoint(i);
                             atoms[i].setPosition(position.x + 330, position.y + 194);
+                            atoms[i].draw1(window);
                         }
                         cout << "position " << position_insert;
                     }
