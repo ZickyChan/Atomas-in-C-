@@ -6,7 +6,7 @@
 #define ATOMAS_MENUCONTROLLER_H
 
 #include "Controller.h"
-#include "MenuView.h"
+#include "../view/MenuView.h"
 #include <iostream>
 
 using namespace std;

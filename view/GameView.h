@@ -6,17 +6,16 @@
 #define ATOMAS_GAMEVIEW_H
 #include <iostream>
 #include "AtomDisplay.h"
+#include "../model/GameModel.h"
 
 using namespace std;
 class GameView{
 public:
-    GameView(int numP, int minVal, int maxVal, float atomRadius,float outRadius, float inRadius):numPoints{numP},min{minVal},max{maxVal},randNum{rand()%(max-min + 1) + min}
-            ,centerPoint{randNum,atomRadius},outsideCircle(outRadius),insideCircle(inRadius){    }
+    GameView(int valCenter, int numP, float atomRadius,float outRadius, float inRadius):numPoints{numP},
+            centerPoint{valCenter,atomRadius},outsideCircle(outRadius),insideCircle(inRadius){    }
 
     GameView(GameView &gv):centerPoint{gv.centerPoint}{
         numPoints = gv.numPoints;
-        max = gv.max;
-        min = gv.min;
         randNum = gv.randNum;
         atoms = gv.atoms;
         outsideCircle = gv.outsideCircle;
@@ -46,12 +45,11 @@ public:
 
         cout << "points: "<<insideCircle.getPointCount() << endl;
 
-        //Add number of elements into the vecor
-        for (int i=0;i<insideCircle.getPointCount();i++){
-            randNum = rand()%(max-min + 1) + min;
-            AtomDisplay shape{randNum,20};
-            atoms.push_back(shape);
-        }
+//        //Add number of elements into the vecor
+//        for (int i=0;i<insideCircle.getPointCount();i++){
+//            AtomDisplay shape{atomVal,20};
+//            atoms.push_back(shape);
+//        }
 
         //Set position for each atom
         for (int i=0;i<insideCircle.getPointCount();i++){
@@ -62,9 +60,23 @@ public:
 
     }
 
+    void addAtomDisplay(GameModel &gm){
+        for (int i=0;i<gm.getAtomRingSize();i++){
+            AtomDisplay shape{gm.getAtomValue(i),20};
+            atoms.push_back(shape);
+            cout << gm.getAtomValue(i) << " ";
+        }
+        cout << endl;
+        gm.Print();
+    }
+
+    void setValueForAtoms(GameModel &gm){
+        for (int i=0;i<gm.getAtomRingSize();i++) {
+            atoms[i].reset(gm.getAtomValue(i));
+        }
+    }
+
     int numPoints;
-    int max;
-    int min;
     int randNum;
     int position_insert;
     vector <AtomDisplay> atoms;

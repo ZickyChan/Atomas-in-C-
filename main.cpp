@@ -1,18 +1,15 @@
 #include <iostream>
-#include "AtomRing.h"
-#include "Game.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <cmath>
-#include "GameScreen.h"
-#include "MenuScreen.h"
-#include "GameView.h"
-#include "GameModel.h"
-#include "GameController.h"
-#include "MenuView.h"
-#include "MenuController.h"
+
+#include "view/GameView.h"
+#include "model/GameModel.h"
+#include "controller/GameController.h"
+#include "view/MenuView.h"
+#include "controller/MenuController.h"
 
 using namespace std;
 
@@ -31,8 +28,9 @@ int main() {
     }*/
     sf::RenderWindow window(sf::VideoMode(1001, 769), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
-    GameView game_view{2,1,3,20,180,150};
     GameModel game_model;
+    GameView game_view{game_model.getCenterValue(),game_model.getAtomRingSize(),20,180,150};
+
     GameController game_controller{game_view,game_model};
 
     MenuView mv{1001,769};
@@ -47,30 +45,10 @@ int main() {
         mode = controller[mode]->Run(window);
     }
 
+    /*cout << "value: " << game_model.getCenterValue() << " size: " << game_model.getAtomRingSize() << endl;
+
+    for (int i=0;i<game_model.getAtomRingSize();i++){
+        cout << "value at point " << i << " : " << game_model.getAtomValue(i);
+    }*/
     return 0;
 }
-
-//#include <SFML/Graphics.hpp>
-//
-//int main()
-//{
-//    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-//    sf::CircleShape shape(100.f);
-//    shape.setFillColor(sf::Color::Green);
-//
-//    while (window.isOpen())
-//    {
-//        sf::Event event;
-//        while (window.pollEvent(event))
-//        {
-//            if (event.type == sf::Event::Closed)
-//                window.close();
-//        }
-//
-//        window.clear();
-//        window.draw(shape);
-//        window.display();
-//    }
-//
-//    return 0;
-//}
