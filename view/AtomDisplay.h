@@ -34,12 +34,21 @@ public:
     }
     void setColor(){
         setColorArray();
-        if(value >= 0){
-            c.setFillColor(color[value]);
+        if(value > 0){
+            c.setFillColor(color[value%color.size()]);
+        }
+        else if(value == 0){
+            c.setFillColor(sf::Color::Red);
         }
         else{
             c.setFillColor(sf::Color::Blue);
         }
+        text.setColor(sf::Color::White);
+    }
+
+    void setDisappear(){
+        c.setFillColor(sf::Color::Transparent);
+        text.setColor(sf::Color::Transparent);
     }
 
     const sf::Vector2f& getCirclePosition(){
@@ -63,7 +72,7 @@ public:
         sf::Font font;
         font.loadFromFile("coolvetica rg.ttf");
         text.setFont(font);
-        text.setColor(sf::Color::White);
+
         if(c.getRadius() == 20) {
             text.setCharacterSize(30);
         }
@@ -83,7 +92,6 @@ public:
         sf::Font font;
         font.loadFromFile("coolvetica rg.ttf");
         text.setFont(font);
-        text.setColor(sf::Color::White);
         if(c.getRadius() == 20) {
             text.setCharacterSize(30);
         }
@@ -115,14 +123,15 @@ public:
     }
 
     void setColorArray(){
-        color.push_back(sf::Color(255,0,0));
         color.push_back(sf::Color(9,217,242));
-        color.push_back(sf::Color(9,242,190));
+        color.push_back(sf::Color(0,255,0));
         color.push_back(sf::Color(242,9,228));
-        color.push_back(sf::Color(201,242,9));
-        color.push_back(sf::Color(201,242,228));
-        color.push_back(sf::Color(9,242,228));
-        color.push_back(sf::Color(9,242,0));
+        color.push_back(sf::Color(232,83,9));
+        color.push_back(sf::Color(139,75,255));
+        color.push_back(sf::Color(82,99,127));
+        color.push_back(sf::Color(255,10,87));
+        color.push_back(sf::Color(22,38,64));
+
     }
 
 //    void draw(sf::RenderTarget& target, sf::RenderStates states){

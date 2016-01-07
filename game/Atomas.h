@@ -20,14 +20,14 @@ bool check_adjacent(Atom *atom);
 
 class Atomas {
 public:
-    Atomas(int max): max{max} {
+    Atomas(int max): max{max},ban{-2} {
         srand((unsigned int)time(NULL));
         player_atom = random_int(HYDROGEN, max / 2);
-        ban = -2;
     }
     Atomas(Atomas &a): ring{a.ring}{
         player_atom = a.player_atom;
         max = a.max;
+        ban = a.ban;
     }
 
     int getRingSize(){

@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(CMAKE_BUILD_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
 
 
-set(SOURCE_FILES main.cpp game/AtomRing.h view/AtomDisplay.h controller/Controller.h controller/GameController.h view/GameView.h model/GameModel.h controller/MenuController.h view/MenuView.h game/Atomas.cpp game/Atomas.h game/AtomRing.cpp game/AtomRing.h)
+set(SOURCE_FILES main.cpp game/AtomRing.h view/AtomDisplay.h controller/Controller.h controller/GameController.h view/GameView.h model/GameModel.h controller/MenuController.h view/MenuView.h game/Atomas.cpp game/Atomas.h game/AtomRing.cpp game/AtomRing.h view/GameOverView.h controller/GameOverController.h)
 add_executable(Atomas ${SOURCE_FILES})
 
 # Detect and add SFML

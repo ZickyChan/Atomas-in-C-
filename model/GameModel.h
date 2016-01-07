@@ -10,7 +10,7 @@
 class GameModel{
 public:
     GameModel():atomas{6} {
-        atomas.addAtoms(6);
+        atomas.addAtoms(23);
     }
     GameModel(GameModel &gm):atomas{gm.atomas}{}
 
@@ -51,8 +51,20 @@ public:
         return atomas.check_proton();
     }
 
+    void setNewCenterValue(){
+        atomas.replace_player_atom();
+    }
+
     AtomRing& getRing(){
         return atomas.getRing();
+    }
+
+    void restart(){
+        Atomas a{6};
+        a.printGame();
+        atomas = a;
+        atomas.addAtoms(6);
+        atomas.printGame();
     }
 private:
     Atomas atomas;

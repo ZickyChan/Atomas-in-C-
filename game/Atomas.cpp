@@ -30,7 +30,7 @@ bool check_adjacent(Atom *atom) {
 
 void Atomas::replace_player_atom() {
     int value = random_int(ELECTRON, max / 2);
-    while (value < ban){
+    while (value < ban || (value == -1 && ring.get_size() == 1)){
         value = random_int(ELECTRON, max / 2);
     }
     replace_player_atom(value);
@@ -43,18 +43,9 @@ void Atomas::replace_player_atom(int player_atom) {
 
 bool Atomas::player_to_ring() {
     bool replace = true;
-    /*if (player_atom == ELECTRON) {
-        player_atom = ring.get_atom()->atom;
-        ring.deleteAtom();
-        replace = false;
-    }
-    else {
-        ring.addAtom(player_atom);
-        replace_player_atom();
-        setMax();
-    }*/
     ring.addAtom(player_atom);
-    replace_player_atom();
+    //replace_player_atom();
+    ring.printRing();
     setMax();
     index = (index + 1)%(ring.get_size());
     //check_protons();
@@ -69,7 +60,11 @@ bool Atomas::player_to_ring(int index) {
 void Atomas::deleteAtom(int index){
     move_to_index(index);
     ring.deleteAtom();
-    replace_player_atom();
+    //replace_player_atom();
+    if(this->index == ring.get_size()){
+        this->index = 0;
+    }
+    ring.printRing();
 }
 //void Atomas::check_protons() {
 //    int count = ring.get_size();
@@ -96,12 +91,14 @@ int Atomas::check_proton() {
         else
             ring.setAtom(index + 2);
         deleted += check_proton() + 2;
-        if(this->index > 0){
+        if(this->index > 0 ){
             this->index--;
         }
     }
-    cout << "CURRENT INDEX: " << this-> index;
     ring.printRing();
+    if (ring.get_size() == 1){
+        this->index = 0;
+    }
     return deleted;
 }
 

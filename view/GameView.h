@@ -16,7 +16,6 @@ public:
 
     GameView(GameView &gv):centerPoint{gv.centerPoint}{
         numPoints = gv.numPoints;
-        randNum = gv.randNum;
         atoms = gv.atoms;
         outsideCircle = gv.outsideCircle;
         insideCircle = gv.insideCircle;
@@ -61,13 +60,16 @@ public:
     }
 
     void addAtomDisplay(GameModel &gm){
-        for (int i=0;i<gm.getAtomRingSize();i++){
-            AtomDisplay shape{gm.getAtomValue(i),20};
-            atoms.push_back(shape);
-            cout << gm.getAtomValue(i) << " ";
+        cout << atoms.size();
+        if(atoms.size() == 0) {
+            for (int i = 0; i < gm.getAtomRingSize(); i++) {
+                AtomDisplay shape{gm.getAtomValue(i), 20};
+                atoms.push_back(shape);
+                cout << gm.getAtomValue(i) << " ";
+            }
+            cout << endl;
+            gm.Print();
         }
-        cout << endl;
-        gm.Print();
     }
 
     void setValueForAtoms(GameModel &gm){
@@ -76,8 +78,19 @@ public:
         }
     }
 
+    void restart(GameModel &gm){
+        for(int i=atoms.size();i>gm.getAtomRingSize();i--) {
+            atoms.pop_back();
+            cout << "i is: " << i << endl;
+        }
+        numPoints = gm.getAtomRingSize();
+        insideCircle.setPointCount(gm.getAtomRingSize());
+        setValueForAtoms(gm);
+        centerPoint.reset(gm.getCenterValue());
+        cout << "atom size: " << atoms.size();
+    }
+
     int numPoints;
-    int randNum;
     int position_insert;
     vector <AtomDisplay> atoms;
     AtomDisplay centerPoint;
