@@ -227,10 +227,15 @@ int GameController::Run(sf::RenderWindow &window) {
 
 
                                 if (i < gv.insideCircle.getPointCount() - 1) {
+                                    int y1 = (int) gv.insideCircle.getPoint(i).y;
+                                    int y2 = (int) gv.insideCircle.getPoint(i + 1).y;
                                     cout << "prev: " << gv.insideCircle.getPoint(i).y << " next: " <<
                                     gv.insideCircle.getPoint(i + 1).y << endl;
-                                    cout << (gv.insideCircle.getPoint(i).y != gv.insideCircle.getPoint(i + 1).y) <<
+                                    cout << (gv.insideCircle.getPoint(i).y == gv.insideCircle.getPoint(i + 1).y) <<
                                     endl;
+                                    cout << (y1 != y2) <<
+                                    endl;
+                                    cout << (290.954 != 290.954) << endl;
                                     if (gv.insideCircle.getPoint(i).y != gv.insideCircle.getPoint(i + 1).y) {
                                         if (valY > (gv.insideCircle.getPoint(i).y + 194) &&
                                             valY < (gv.insideCircle.getPoint(i + 1).y + 194) &&

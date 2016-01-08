@@ -10,7 +10,7 @@
 class GameModel{
 public:
     GameModel():atomas{6} {
-        atomas.addAtoms(23);
+        atomas.addAtoms(6);
     }
     GameModel(GameModel &gm):atomas{gm.atomas}{}
 
