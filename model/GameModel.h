@@ -51,6 +51,10 @@ public:
         return atomas.check_proton();
     }
 
+    int getScore(){
+        return atomas.getScore();
+    }
+
     void setNewCenterValue(){
         atomas.replace_player_atom();
     }

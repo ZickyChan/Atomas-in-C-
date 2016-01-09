@@ -29,6 +29,7 @@ bool check_adjacent(Atom *atom) {
 }
 
 void Atomas::replace_player_atom() {
+    setBan();
     int value = random_int(ELECTRON, max / 2);
     while (value < ban || (value == -1 && ring.get_size() == 1)){
         value = random_int(ELECTRON, max / 2);
@@ -90,6 +91,7 @@ int Atomas::check_proton() {
             ring.addToAtom(1);
         else
             ring.setAtom(index + 2);
+        score += index*2;
         deleted += check_proton() + 2;
         if(this->index > 0 ){
             this->index--;

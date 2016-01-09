@@ -27,7 +27,10 @@ public:
             else if (value == -1) {
                 text.setPosition(x + 16, y);
             }
-            else {
+            else if (value > 10){
+                text.setPosition(x + 10, y);
+            }
+            else{
                 text.setPosition(x + 14, y);
             }
         }

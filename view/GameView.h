@@ -12,16 +12,23 @@ using namespace std;
 class GameView{
 public:
     GameView(int valCenter, int numP, float atomRadius,float outRadius, float inRadius):numPoints{numP},
-            centerPoint{valCenter,atomRadius},outsideCircle(outRadius),insideCircle(inRadius){    }
+            centerPoint{valCenter,atomRadius},outsideCircle(outRadius),insideCircle(inRadius){
+        scoreText.setString("0");
+    }
 
     GameView(GameView &gv):centerPoint{gv.centerPoint}{
         numPoints = gv.numPoints;
         atoms = gv.atoms;
         outsideCircle = gv.outsideCircle;
         insideCircle = gv.insideCircle;
+        scoreText = gv.scoreText;
     }
 
     void setPosition(){
+        setUpScoreText();
+
+        cout << "score text X: " << scoreText.getPosition().x << " Y: "  << scoreText.getPosition().y << endl;
+
         //Set the format and position for outside circle
         outsideCircle.setFillColor(sf::Color::Transparent);
         outsideCircle.setOutlineThickness(1);
@@ -43,12 +50,6 @@ public:
         centerPoint.setPosition(480,344);
 
         cout << "points: "<<insideCircle.getPointCount() << endl;
-
-//        //Add number of elements into the vecor
-//        for (int i=0;i<insideCircle.getPointCount();i++){
-//            AtomDisplay shape{atomVal,20};
-//            atoms.push_back(shape);
-//        }
 
         //Set position for each atom
         for (int i=0;i<insideCircle.getPointCount();i++){
@@ -83,6 +84,9 @@ public:
             atoms.pop_back();
             cout << "i is: " << i << endl;
         }
+        cout << "game score: " << gm.getScore();
+        setValueForScoreText(gm.getScore());
+        scoreText.setColor(sf::Color::White);
         numPoints = gm.getAtomRingSize();
         insideCircle.setPointCount(gm.getAtomRingSize());
         setValueForAtoms(gm);
@@ -90,10 +94,31 @@ public:
         cout << "atom size: " << atoms.size();
     }
 
+    void setValueForScoreText(int val){
+        scoreText.setString(std::to_string(val));
+    }
+
+    void setUpScoreText(){
+        font1.loadFromFile("libelsuit.ttf");
+
+        scoreText.setFont(font1);
+        scoreText.setCharacterSize(60);
+        scoreText.setColor(sf::Color::White);
+
+
+        //center text
+        sf::FloatRect textRect = scoreText.getLocalBounds();
+        scoreText.setOrigin(textRect.left + textRect.width/2.0f,
+                        textRect.top  + textRect.height/2.0f);
+        scoreText.setPosition(sf::Vector2f(1001/2.0f,50));
+    }
+
     int numPoints;
     int position_insert;
     vector <AtomDisplay> atoms;
     AtomDisplay centerPoint;
+    sf::Font font1;
+    sf::Text scoreText;
     sf::CircleShape outsideCircle;
     sf::CircleShape insideCircle;
 };

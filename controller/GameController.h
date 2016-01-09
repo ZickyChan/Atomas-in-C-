@@ -94,6 +94,7 @@ public:
                                 gv.atoms[(index - i + gv.atoms.size()) % gv.atoms.size()].draw(window, t2);
                             }
                             window.draw(gv.outsideCircle);
+                            window.draw(gv.scoreText);
                             gv.centerPoint.draw1(window);
                             for (int j = 0; j < gv.atoms.size(); j++) {
                                 if(j != ((index + i)%gv.atoms.size()) && j != (index - i + gv.atoms.size())%gv.atoms.size() ) {
@@ -106,11 +107,12 @@ public:
                             window.display();
                             step += i+1;
                         }
-
+                        gv.setValueForScoreText(gm.getScore());
                         gv.atoms[(index + i)%gv.atoms.size()].setPosition(gv.atoms[index].getCirclePosition().x,gv.atoms[index].getCirclePosition().y);
                         gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].setPosition(gv.atoms[index].getCirclePosition().x,gv.atoms[index].getCirclePosition().y);
                         window.clear(sf::Color::Black);
                         window.draw(gv.outsideCircle);
+                        window.draw(gv.scoreText);
                         gv.centerPoint.draw1(window);
 
                         for (int i = 0; i < gv.atoms.size(); i++) {
@@ -227,16 +229,11 @@ int GameController::Run(sf::RenderWindow &window) {
 
 
                                 if (i < gv.insideCircle.getPointCount() - 1) {
-                                    int y1 = (int) gv.insideCircle.getPoint(i).y;
-                                    int y2 = (int) gv.insideCircle.getPoint(i + 1).y;
-                                    cout << "prev: " << gv.insideCircle.getPoint(i).y << " next: " <<
-                                    gv.insideCircle.getPoint(i + 1).y << endl;
-                                    cout << (gv.insideCircle.getPoint(i).y == gv.insideCircle.getPoint(i + 1).y) <<
-                                    endl;
-                                    cout << (y1 != y2) <<
-                                    endl;
-                                    cout << (290.954 != 290.954) << endl;
-                                    if (gv.insideCircle.getPoint(i).y != gv.insideCircle.getPoint(i + 1).y) {
+                                    float y1 = roundf(gv.insideCircle.getPoint(i).y * 1000)/ 1000;
+                                    float y2  = roundf(gv.insideCircle.getPoint(i + 1).y * 1000)/ 1000;
+
+                                    //gv.insideCircle.getPoint(i+1).y = roundf(gv.insideCircle.getPoint(i+1).y * 1000)/ 1000;
+                                    if (/*gv.insideCircle.getPoint(i).y != gv.insideCircle.getPoint(i + 1).y*/y1!=y2) {
                                         if (valY > (gv.insideCircle.getPoint(i).y + 194) &&
                                             valY < (gv.insideCircle.getPoint(i + 1).y + 194) &&
                                             event.mouseButton.x > 500) {
@@ -318,6 +315,7 @@ int GameController::Run(sf::RenderWindow &window) {
                                     gv.atoms[index].move(10, 10 * k);
                                     window.clear(sf::Color::Black);
                                     window.draw(gv.outsideCircle);
+                                    window.draw(gv.scoreText);
                                     gv.centerPoint.draw1(window);
                                     for (int i = 0; i < gv.atoms.size(); i++) {
 
@@ -333,6 +331,7 @@ int GameController::Run(sf::RenderWindow &window) {
                                     gv.atoms[index].move((-10), (-10) * k);
                                     window.clear(sf::Color::Black);
                                     window.draw(gv.outsideCircle);
+                                    window.draw(gv.scoreText);
                                     gv.centerPoint.draw1(window);
                                     for (int i = 0; i < gv.atoms.size(); i++) {
 
@@ -350,7 +349,7 @@ int GameController::Run(sf::RenderWindow &window) {
                                 gv.centerPoint.reset(gm.getCenterValue());
                             }
                             if (gv.atoms.size() == 24) {
-                                GameOverView gov{1001,769,80};
+                                GameOverView gov{1001,769,gm.getScore()};
                                 GameOverController goc{gov};
                                 gm.restart();
                                 gv.restart(gm);
@@ -398,7 +397,7 @@ int GameController::Run(sf::RenderWindow &window) {
 
         window.clear(sf::Color::Black);
         window.draw(gv.outsideCircle);
-        //window.draw(abc);
+        window.draw(gv.scoreText);
         // window.draw(insideCircle);
         gv.centerPoint.draw1(window);
         //centerPoint.draw1(window);

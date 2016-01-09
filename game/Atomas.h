@@ -20,7 +20,7 @@ bool check_adjacent(Atom *atom);
 
 class Atomas {
 public:
-    Atomas(int max): max{max},ban{-2} {
+    Atomas(int max): max{max},ban{-2},score{0} {
         srand((unsigned int)time(NULL));
         player_atom = random_int(HYDROGEN, max / 2);
     }
@@ -28,6 +28,11 @@ public:
         player_atom = a.player_atom;
         max = a.max;
         ban = a.ban;
+        score = a.score;
+    }
+
+    int getScore(){
+        return score;
     }
 
     int getRingSize(){
@@ -44,6 +49,15 @@ public:
 
     AtomRing& getRing(){
         return ring;
+    }
+
+    void setBan(){
+        if (ban == -2 && (max/2) == 5){
+            ban = 1;
+        }
+        else if(((max/2) - ban > 4)){
+            ban++;
+        }
     }
 
     void replace_player_atom();
@@ -83,6 +97,7 @@ private:
     int player_atom;
     int max;
     int ban;
+    int score;
     int index = 0;
 };
 
