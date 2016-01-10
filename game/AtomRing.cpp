@@ -32,6 +32,7 @@ void AtomRing::addAtom(Atom *atom) {
         atom->next = this->atom->next;
         this->atom->next->last = atom;
         this->atom->next = atom;
+
     }
     size++;
     forward();
@@ -82,32 +83,33 @@ int AtomRing::deleteNextAtom() {
     return index;
 }
 
-void AtomRing::deleteAtomLastNext() {
-    if (atom->next->next == atom->last->last) {
-        free(atom->next);
-        free(atom->last);
-        atom->next = nullptr;
-        atom->last = nullptr;
-    }
-    else {
-        Atom *atom = this->atom->last;
-        if (atom != nullptr) {
-            atom->next->last = atom->last;
-            atom->last->next = atom->next;
-            free(atom);
-        }
-        atom = this->atom->next;
-        if (atom != nullptr) {
-            atom->next->last = atom->last;
-            atom->last->next = atom->next;
-            free(atom);
-        }
-    }
-}
+//void AtomRing::deleteAtomLastNext() {
+//    if (atom->next->next == atom->last->last) {
+//        free(atom->next);
+//        free(atom->last);
+//        atom->next = nullptr;
+//        atom->last = nullptr;
+//    }
+//    else {
+//        Atom *atom = this->atom->last;
+//        if (atom != nullptr) {
+//            atom->next->last = atom->last;
+//            atom->last->next = atom->next;
+//            free(atom);
+//        }
+//        atom = this->atom->next;
+//        if (atom != nullptr) {
+//            atom->next->last = atom->last;
+//            atom->last->next = atom->next;
+//            free(atom);
+//        }
+//    }
+//}
 
 bool AtomRing::forward() {
     if (atom->next != nullptr) {
         atom = atom->next;
+        increment_index();
         return true;
     }
     return false;
@@ -116,6 +118,7 @@ bool AtomRing::forward() {
 bool AtomRing::back() {
     if (atom->last != nullptr) {
         atom = atom->last;
+        decrement_index();
         return true;
     }
     return false;
@@ -137,11 +140,37 @@ void AtomRing::printRing() {
 }
 
 int AtomRing::getAtom(int index) {
-    Atom *current = atom;
-    if (current == nullptr)
-        return NULL_ATOM;
-    for (int i = 0; i < index; i++) {
-        current = current->next;
-    }
-    return current->atom;
+    move_to_index(index);
+    return atom->atom;
+}
+
+void AtomRing::move_to_index(int index) {
+    while (index < 0)
+        index += size;
+    index = index % size;
+
+    if (index > size - 1 || size < 2)
+        return;
+
+    int count = this->index - index;
+    if (count < 0)
+        for (int i = count; i != 0; i++) {
+            forward();
+
+        }
+    else if (count > 0)
+        for (int i = count; i != 0; i--) {
+            back();
+        }
+    this->index = index;
+}
+
+void AtomRing::add_atom(int index, int value, int isotope) {
+    move_to_index(index);
+    Atom *atom = new Atom();
+    atom->atom = value;
+    atom->isotope = isotope;
+    atom->next = nullptr;
+    atom->last = nullptr;
+    addAtom(atom);
 }

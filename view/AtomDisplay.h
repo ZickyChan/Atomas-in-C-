@@ -48,7 +48,6 @@ public:
         }
         text.setColor(sf::Color::White);
     }
-
     void setDisappear(){
         c.setFillColor(sf::Color::Transparent);
         text.setColor(sf::Color::Transparent);
@@ -76,6 +75,8 @@ public:
         font.loadFromFile("coolvetica rg.ttf");
         text.setFont(font);
 
+        //cout << "AAAAA: \t" << value << endl;
+
         if(c.getRadius() == 20) {
             text.setCharacterSize(30);
         }
@@ -88,6 +89,7 @@ public:
         else if(value == -1){
             text.setString("-");
         }
+
         w.draw(c);
         w.draw(text);
     }
@@ -117,12 +119,17 @@ public:
 
 
     void reset(int val){
+        cout << "BEFORE: " << value << endl;
         value = val;
         setColor();
+        cout << "After: " << value << endl;
     }
 
     int getValue(){
         return value;
+    }
+    std::string getText(){
+        return std::string(text.getString());
     }
 
     void setColorArray(){

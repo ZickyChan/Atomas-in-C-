@@ -34,6 +34,9 @@ public:
                             return 1;
 
                         }
+                        else if(mv.inPlayer2Text(event.mouseButton.x,event.mouseButton.y)){
+                            return 2;
+                        }
                         else{
                             cout << "wrong menu" << endl;
                         }

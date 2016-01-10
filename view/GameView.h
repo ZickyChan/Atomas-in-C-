@@ -85,13 +85,12 @@ public:
             cout << "i is: " << i << endl;
         }
         cout << "game score: " << gm.getScore();
-        setValueForScoreText(gm.getScore());
+        scoreText.setString("0");
         scoreText.setColor(sf::Color::White);
         numPoints = gm.getAtomRingSize();
         insideCircle.setPointCount(gm.getAtomRingSize());
         setValueForAtoms(gm);
         centerPoint.reset(gm.getCenterValue());
-        cout << "atom size: " << atoms.size();
     }
 
     void setValueForScoreText(int val){

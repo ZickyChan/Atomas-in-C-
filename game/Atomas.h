@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include "AtomRing.h"
+#include "../network/Data.h"
 
 int random_int(int min, int max);
 
@@ -70,8 +71,6 @@ public:
 
     void deleteAtom(int index);
 
-    void check_protons();
-
     int check_proton();
 
     void addAtoms(int count);
@@ -88,9 +87,21 @@ public:
 
     void move_to_index(int index);
 
-    //void add_ring_data(Data &data);
+    int get_player_id() {
+        return id;
+    }
 
-    //void add_player_atom_data(Data &data);
+    void set_player_id(int id) {
+        this->id = id;
+    }
+
+    void add_ring_data(Data &data);
+
+    void add_player_atom_data(Data &data);
+
+    void add_atoms(Data &data);
+
+    void add_atom(int index, int value, int isotope);
 
 private:
     AtomRing ring;
@@ -99,6 +110,9 @@ private:
     int ban;
     int score;
     int index = 0;
+    int id;
+
+
 };
 
 #endif //ATOMAS_ATOMAS_H

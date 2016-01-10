@@ -168,15 +168,37 @@ void Atomas::move_to_index(int index) {
     this->index = index;
 }
 
-//
-//void Atomas::add_ring_data(Data &data) {
-//    Atom *atom = get_index_atom(0);
-//    for (int i = 0; i < ring.get_size(); i++) {
-//        data.add_atom(i, atom->atom);
-//    }
-//
-//}
-//
-//void Atomas::add_player_atom_data(Data &data) {
-//    data.put("player_atom", player_atom);
-//}
+
+void Atomas::add_ring_data(Data &data) {
+    Atom *atom = get_index_atom(0);
+    for (int i = 0; i < ring.get_size(); i++) {
+        data.add_atom(i, atom->atom);
+        atom = atom->next;
+    }
+
+}
+
+void Atomas::add_player_atom_data(Data &data) {
+    data.put("player_atom", player_atom);
+}
+
+void Atomas::add_atoms(Data &data) {
+    string value;
+    int count = 0;
+    index = -1;
+    while (true) {
+        value = data.get(to_string(count));
+        if (value == "ERROR") {
+            cout << value << endl;
+            break;
+        }
+        ring.addAtom(stoi(value));
+        index++;
+        count++;
+    }
+}
+
+void Atomas::add_atom(int index, int value, int isotope) {
+    move_to_index(index);
+    ring.add_atom(value, isotope);
+}

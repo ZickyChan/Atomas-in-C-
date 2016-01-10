@@ -6,6 +6,7 @@
 #define ATOMAS_ENTERIPVIEW_H
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 
 class EnterIPView{
@@ -29,11 +30,7 @@ public:
         introTitle.setColor(sf::Color::White);
         introTitle.setString("Enter server IP & Port");
 
-        //set the position for the intro title
-        sf::FloatRect textRect = introTitle.getLocalBounds();
-        introTitle.setOrigin(textRect.left + textRect.width/2.0f,
-                        textRect.top  + textRect.height/2.0f);
-        introTitle.setPosition(sf::Vector2f(200,scr_height/2.0f - 200));
+
 
 
         //Format the ip label
@@ -43,7 +40,7 @@ public:
         ipLabel.setString("IP   : ");
 
         //set Position for ip label
-        textRect = ipLabel.getLocalBounds();
+        sf::FloatRect  textRect = ipLabel.getLocalBounds();
         ipLabel.setOrigin(textRect.left + textRect.width/2.0f,
                            textRect.top  + textRect.height/2.0f);
         ipLabel.setPosition(sf::Vector2f(200,scr_height/2.0f - 100));
@@ -60,6 +57,12 @@ public:
                            textRect.top  + textRect.height/2.0f);
         portLabel.setPosition(sf::Vector2f(200,scr_height/2.0f));
 
+
+        //set the position for the intro title
+        introTitle.setOrigin(textRect.left + textRect.width/2.0f,
+                             textRect.top  + textRect.height/2.0f);
+        introTitle.setPosition(sf::Vector2f(200,scr_height/2.0f - 200));
+
         //Format the port input and ip input
         portInput.setFont(font1);
         portInput.setCharacterSize(40);
@@ -71,6 +74,10 @@ public:
 
         //Set the position for port input and ip input
         portInput.setPosition(250 + textRect.left + textRect.width/2.0f, scr_height/2.0f);
+        portInput.setOrigin(textRect.left + textRect.width/2.0f,
+                           textRect.top  + textRect.height/2.0f);
+        ipInput.setOrigin(textRect.left + textRect.width/2.0f,
+                          textRect.top  + textRect.height/2.0f);
         ipInput.setPosition(250 + textRect.left + textRect.width/2.0f, scr_height/2.0f - 100);
 
         //Formar the ok text view
@@ -78,10 +85,84 @@ public:
         ok.setCharacterSize(60);
         ok.setColor(sf::Color::White);
 
-        ok.setPosition(scr_width - 200,scr_height/2.0f + 100);
+        textRect = ok.getLocalBounds();
+        ok.setOrigin(textRect.left + textRect.width/2.0f,
+                         textRect.top  + textRect.height/2.0f);
+        ok.setPosition(scr_width - 300,scr_height/2.0f + 100);
+        ok.setString("OK");
+
+        //Set up the status text
+        //Status text is use to notice the user that which place the user is modifying
+        status.setFont(font1);
+        status.setCharacterSize(30);
+        status.setColor(sf::Color::White);
+
+        //Set position for the status
+        textRect = status.getLocalBounds();
+        status.setOrigin(textRect.left + textRect.width/2.0f,
+                            textRect.top  + textRect.height/2.0f);
+        status.setPosition(sf::Vector2f(scr_width/2.0f,scr_height - 200));
 
 
     }
+    bool inOkText(float x, float y){
+        bool result;
+        sf::FloatRect okRect = ok.getLocalBounds();
+        result = ((x >= (ok.getPosition().x - okRect.width/2.0f)) && (x <= (ok.getPosition().x + okRect.width/2.0f))
+                  && y >= ok.getPosition().y - okRect.height/2.0f) && (y <= (ok.getPosition().y + okRect.height/2.0f));
+        return result;
+    }
+
+    bool inIp(float x, float y){
+        bool result;
+        sf::FloatRect ipRect = portLabel.getLocalBounds();
+        result = ((x >= (ipInput.getPosition().x - ipRect.width/2.0f)) && (x <= (ipInput.getPosition().x + ipRect.width*5))
+                  && y >= ipInput.getPosition().y - ipRect.height/2.0f) && (y <= (ipInput.getPosition().y + ipRect.height/2.0f));
+        return result;
+    }
+
+    bool inPort(float x, float y){
+        bool result;
+        sf::FloatRect portRect = portLabel.getLocalBounds();
+        result = ((x >= (portInput.getPosition().x - portRect.width/2.0f)) && (x <= (portInput.getPosition().x + portRect.width*5))
+                  && y >= portInput.getPosition().y - portRect.height/2.0f) && (y <= (portInput.getPosition().y + portRect.height/2.0f));
+        return result;
+    }
+    void setTextStatus(int input){
+        if(input == 0){
+            status.setString("You can't modify anything!");
+        }
+        else if(input == 1){
+            status.setString("You are modifying IP address!");
+        }
+        else{
+            status.setString("You are modifying port!");
+        }
+
+    }
+
+
+    void draw(sf::RenderWindow &window,std::string ip, std::string port){
+        if(ip == ""){
+            ip= "                      ";
+
+        }
+        if(port == ""){
+            port = "                      ";
+        }
+        window.clear();
+        ipInput.setString(ip);
+        portInput.setString(port);
+        window.draw(ipLabel);
+        window.draw(ipInput);
+        window.draw(portLabel);
+        window.draw(portInput);
+        window.draw(introTitle);
+        window.draw(ok);
+        window.draw(status);
+        window.display();
+    }
+
 private:
     int scr_height;
     int scr_width;
@@ -90,6 +171,7 @@ private:
     sf::Text portLabel;
     sf::Text portInput;
     sf::Text introTitle;
+    sf::Text status;
     sf::Text ok;
     sf::Font font1;
 };

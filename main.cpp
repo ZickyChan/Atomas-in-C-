@@ -10,6 +10,8 @@
 #include "controller/GameController.h"
 #include "view/MenuView.h"
 #include "controller/MenuController.h"
+#include "view/EnterIPVIew.h"
+#include "controller/EnterIPController.h"
 
 using namespace std;
 
@@ -36,9 +38,14 @@ int main() {
     MenuView mv{1001,769};
     MenuController mc{mv};
 
+    EnterIPView eipv{1001,769};
+    EnterIPController eipc{eipv};
+
     vector <Controller*> controller;
     controller.push_back(&mc);
     controller.push_back(&game_controller);
+    controller.push_back(&eipc);
+
     int mode = 0;
 
     while (mode >=0) {

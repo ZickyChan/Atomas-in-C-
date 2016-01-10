@@ -66,10 +66,23 @@ public:
 
     int getAtom(int index);
 
+    void add_atom(int index, int value, int isotope);
+
+    void move_to_index(int index);
 
 private:
     Atom *atom;
     int size;
+    int index;
+
+
+    void increment_index() {
+        index = (index + 1) % size;
+    }
+
+    void decrement_index() {
+        index = (index - 1 + size) % size;
+    }
 };
 
 #endif //ATOMAS_ATOMRING_H
