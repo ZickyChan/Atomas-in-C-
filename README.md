@@ -15,6 +15,7 @@ This repository contains the Client for playing a single or multiplayer game of 
 To setup the server or client, open project using Clion. This project has been tested on the Debian image provided by the lecturer using VirtualBox.
 
 In order to run the server or client, first click "Run"->"Edit Configurations" in the file menu bar. Click on "Application" in the sidebar and for "Target:" choose "atomas_server" and click "OK". The project can now be compiled and run using Clion.
+If your machine haven't had the boost library and sfml library, you should install them to run our game (I can't remember that boost is automatically installed in the virtual or not, but the sfml should be installed manually by this:  ### sudo apt-get install libsfml-dev ### )
 
 ### How to Play ###
 
