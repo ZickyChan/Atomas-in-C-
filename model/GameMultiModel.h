@@ -7,16 +7,26 @@
 
 #include "../game/AtomRing.h"
 #include "../game/Atomas.h"
+#include "../network/Connection.h"
 
 class GameMultiModel{
 public:
-    GameMultiModel():atomas1{6},atomas2{6} {
+    GameMultiModel(std::string ip, std::string port, boost::asio::io_service &io_service):atomas1{6},atomas2{6},connection{"Mike",2} {
         atomas1.addAtoms(6);
+        //connection.connect(ip, port, io_service);
+        connection.connect("192.168.1.25", "6996", io_service);
+        connection.setup();
+
+        connection.wait_to_start(atomas1,atomas2);
     }
-    GameMultiModel(GameMultiModel &gm):atomas1{gm.atomas1},atomas2{gm.atomas2}{}
+    GameMultiModel(GameMultiModel &gm):atomas1{gm.atomas1},atomas2{gm.atomas2},connection{gm.connection}{}
 
     int getAtomRingSize(){
         return atomas1.getRingSize();
+    }
+
+    int getAtomRing2Size(){
+        return atomas2.getRingSize();
     }
 
     int getAtomValue(int index){
@@ -36,6 +46,9 @@ public:
 
     void addAtomToRing(int index){
         atomas1.player_to_ring(index);
+    }
+    void addAtomToRing2(int index){
+        atomas2.player_to_ring(index);
     }
 
     void Print(){
@@ -68,10 +81,6 @@ public:
         //atomas1.printGame();
     }
 
-    int findProton(){
-        return atomas1.find_proton();
-    }
-
     Atomas &getAtomas(int i){
         if(i==0){
             return atomas1;
@@ -80,9 +89,22 @@ public:
             return atomas2;
         }
     }
+    void send_normal(int index) {
+        Data data;
+        data.put("index", index);
+        data.put("new atom",getCenterValue());
+        data.put("type","normal");
+        data.put("id",connection.connection_id());
+        connection.send(data.to_json());
+    }
+    std::string read(){
+        return connection.read();
+    }
+
 private:
     Atomas atomas1;
     Atomas atomas2;
+    Connection connection;
 
 };
 

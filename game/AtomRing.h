@@ -54,7 +54,7 @@ public:
 
     void print();
 
-    void add_atoms_from_data(Data data);
+    void add_atoms_from_data(Data &data);
 
 
     Atom *get_atom_pointer(int index) {

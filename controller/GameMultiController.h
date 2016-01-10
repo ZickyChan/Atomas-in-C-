@@ -10,6 +10,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <cmath>
 #include <iostream>
+#include <thread>
 #include "../view/AtomDisplay.h"
 #include "Controller.h"
 #include "../view/GameMultiView.h"
@@ -24,93 +25,135 @@ public:
 
     }
 
-    void checkAtoms(sf::RenderWindow &window){
+    void checkAtoms(sf::RenderWindow &window) {
         int index = 0;
-        int count;
-        while (index >= 0) {
-            index = gm.findProton();
-            count = gm.getAtomRingSize();
-            if (gm.getRing().get_atom_pointer(index)->atom == PROTON) {
-                cout << "proton position: " << index << endl;
-                cout << "combo?: " << gm.check_proton(index);
-                int combo = gm.check_proton(index);
-                count -= combo*2;
-                sf::Transform t1;
-                sf::Transform t2;
-                for (int i=1;i<= combo;i++){
-                    float angle = calculateAngle(gv1.atoms[(index + i)%gv1.atoms.size()],gv1.atoms[index],150);
-                    int step = 0;
-                    while (true){
-                        if( angle <= step ){
-                            break;
-                        }
-
-                        /*gv.atoms[(index + i)%gv.atoms.size()].getCirclePosition().x > gv.atoms[index].getCirclePosition().x &&
-                        gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].getCirclePosition().x < gv.atoms[index].getCirclePosition().x*/
-                        window.clear(sf::Color::Black);
-
-                        t1.rotate(2.0, { 250,364 });
-                        t2.rotate(-2.0, { 250,364 });
-
-                        //gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].ro
-                        if((gv1.atoms[index].getCirclePosition().y+194)>344) {
-                            gv1.atoms[(index + i) % gv1.atoms.size()].draw(window, t2);
-                            gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].draw(window, t1);
-                        }
-                        else{
-                            gv1.atoms[(index + i) % gv1.atoms.size()].draw(window, t1);
-                            gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].draw(window, t2);
-                        }
-                        window.draw(gv1.outsideCircle);
-                        window.draw(gv1.scoreText);
-                        gv1.centerPoint.draw1(window);
-                        for (int j = 0; j < gv1.atoms.size(); j++) {
-                            if(j != ((index + i)%gv1.atoms.size()) && j != (index - i + gv1.atoms.size())%gv1.atoms.size() ) {
-                                gv1.atoms[j].draw1(window);
+        int combo = 0;
+        while (index < gm.getRing().get_size()) {
+            if (gm.getRing().get_atom(index) == PROTON) {
+                combo = gm.check_proton(index);
+                cout << "index: " << index << endl;
+                cout << "value: " << gm.getRing().get_atom_pointer(index)->atom << endl;
+                cout << "combo: " << combo << endl;
+                if (combo > 0) {
+                    cout << "proton position: " << index << endl;
+                    cout << "combo?: " << gm.check_proton(index);
+                    sf::Transform t1;
+                    sf::Transform t2;
+                    for (int i = 1; i <= (combo); i++) {
+                        float angle = calculateAngle(gv1.atoms[(index + i) % gv1.atoms.size()], gv1.atoms[index], 150);
+                        int step = 0;
+                        while (true) {
+                            if (angle <= step) {
+                                break;
                             }
 
+                            /*gv.atoms[(index + i)%gv.atoms.size()].getCirclePosition().x > gv.atoms[index].getCirclePosition().x &&
+                            gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].getCirclePosition().x < gv.atoms[index].getCirclePosition().x*/
+                            window.clear(sf::Color::Black);
 
+                            t1.rotate(2.0, {250, 364});
+                            t2.rotate(-2.0, {250, 364});
+
+                            //gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].ro
+                            if ((gv1.atoms[index].getCirclePosition().y + 194) > 344) {
+                                gv1.atoms[(index + i) % gv1.atoms.size()].draw(window, t2);
+                                gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].draw(window, t1);
+                            }
+                            else {
+                                gv1.atoms[(index + i) % gv1.atoms.size()].draw(window, t1);
+                                gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].draw(window, t2);
+                            }
+                            window.draw(gv1.outsideCircle);
+                            window.draw(gv1.scoreText);
+                            gv1.centerPoint.draw1(window);
+                            for (int j = 0; j < gv1.atoms.size(); j++) {
+                                if (j != ((index + i) % gv1.atoms.size()) &&
+                                    j != (index - i + gv1.atoms.size()) % gv1.atoms.size()) {
+                                    gv1.atoms[j].draw1(window);
+                                }
+
+
+                            }
+
+                            window.display();
+                            step += i + 1;
                         }
+                        //gv1.setValueForScoreText(gm.getScore());
+                        gv1.atoms[(index + i) % gv1.atoms.size()].setPosition(gv1.atoms[index].getCirclePosition().x,
+                                                                              gv1.atoms[index].getCirclePosition().y);
+                        gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].setPosition(
+                                gv1.atoms[index].getCirclePosition().x, gv1.atoms[index].getCirclePosition().y);
+                        window.clear(sf::Color::Black);
+                        gv1.draw(window);
+                        gv2.draw(window);
 
                         window.display();
-                        step += i+1;
-                    }
-                    //gv1.setValueForScoreText(gm.getScore());
-                    gv1.atoms[(index + i)%gv1.atoms.size()].setPosition(gv1.atoms[index].getCirclePosition().x,gv1.atoms[index].getCirclePosition().y);
-                    gv1.atoms[(index - i + gv1.atoms.size())%gv1.atoms.size()].setPosition(gv1.atoms[index].getCirclePosition().x,gv1.atoms[index].getCirclePosition().y);
-                    window.clear(sf::Color::Black);
-                    window.draw(gv1.outsideCircle);
-                    window.draw(gv1.scoreText);
-                    gv1.centerPoint.draw1(window);
-
-                    for (int i = 0; i < gv1.atoms.size(); i++) {
-
-                        gv1.atoms[i].draw1(window);
 
 
                     }
 
-                    window.display();
-
-
+                    for (int i = combo * 2; i > 0; i--) {
+                        gv1.atoms.pop_back();
+                    }
+                    gv1.insideCircle.setPointCount(gm.getAtomRingSize());
+                    gv1.setValueForAtoms(gm);
+                    for (int i = 0; i < gv1.insideCircle.getPointCount(); i++) {
+                        sf::Vector2f position = gv1.insideCircle.getPoint(i);
+                        gv1.atoms[i].setPosition(position.x + 80, position.y + 194);
+                        //gv.atoms[i].draw1(window);
+                    }
+                    index = 0;
+                    combo = 0;
                 }
-
-                for (int i = combo*2;i > 0;i--){
-                    gv1.atoms.pop_back();
-                }
-                gv1.insideCircle.setPointCount(gm.getAtomRingSize());
-                gv1.setValueForAtoms(gm);
-                for (int i = 0; i < gv1.insideCircle.getPointCount(); i++) {
-                    sf::Vector2f position = gv1.insideCircle.getPoint(i);
-                    gv1.atoms[i].setPosition(position.x + 80, position.y + 194);
-                    //gv.atoms[i].draw1(window);
+                else{
+                    index++;
                 }
             }
-
-            count--;
+            else{
+                index++;
+            }
         }
         gm.setNewCenterValue();
     }
+
+    void thread_function() {
+        string type;
+        float y0,x0,k;
+
+        do {
+            Data data(gm.read());
+            type = data.get("type");
+            if(type == "normal"){
+                int index = stoi(data.get("index"));
+                int new_atom = stoi(data.get("new atom"));
+
+                gv2.position_insert = index;
+                AtomDisplay temp{gv2.centerPoint};
+                //gv2.centerPoint.setDisappear();
+
+                if (gv2.position_insert > -1) {
+                    gv2.atoms.insert(gv2.atoms.begin() + gv2.position_insert, temp);
+                    gm.addAtomToRing(gv2.position_insert - 1);
+                }
+                else if (gv2.position_insert == -1) {
+                    gv2.atoms.push_back(temp);
+                    gm.addAtomToRing(gm.getAtomRing2Size() - 1);
+                }
+
+                gv2.insideCircle.setPointCount(gm.getAtomRing2Size());
+                for (int i = 0; i < gv2.insideCircle.getPointCount(); i++) {
+                        sf::Vector2f position = gv2.insideCircle.getPoint(i);
+                        gv2.atoms[i].setPosition(position.x + 80, position.y + 194);
+                }
+
+
+                gv2.centerPoint.reset(new_atom);
+
+
+            }
+        }while(type != "END");
+    }
+
 
 
     virtual int Run(sf::RenderWindow &window);
@@ -118,6 +161,8 @@ private:
     GameMultiView gv1;
     GameMultiView gv2;
     GameMultiModel gm;
+    sf::RenderWindow *window;
+    std::thread *t1;
 };
 
 int GameMultiController::Run(sf::RenderWindow &window) {
@@ -128,6 +173,8 @@ int GameMultiController::Run(sf::RenderWindow &window) {
 
     gv2.addAtomDisplay(gm.getAtomas(1));
     gv2.setPosition();
+
+    t1 = new thread(&GameMultiController::thread_function, this);
 
     while (window.isOpen()) {
 
@@ -205,8 +252,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                     float y1 = roundf(gv1.insideCircle.getPoint(i).y * 1000)/ 1000;
                                     float y2  = roundf(gv1.insideCircle.getPoint(i + 1).y * 1000)/ 1000;
 
-                                    //gv.insideCircle.getPoint(i+1).y = roundf(gv.insideCircle.getPoint(i+1).y * 1000)/ 1000;
-                                    if (/*gv.insideCircle.getPoint(i).y != gv.insideCircle.getPoint(i + 1).y*/y1!=y2) {
+                                    if (y1!=y2) {
                                         if (valY > (gv1.insideCircle.getPoint(i).y + 194) &&
                                             valY < (gv1.insideCircle.getPoint(i + 1).y + 194) &&
                                             event.mouseButton.x > 250) {
@@ -243,7 +289,6 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                     }
 
                                 }
-                                cout << "end loop " << endl;
                             }
 
                             if(gv1.position_insert != -2) {
@@ -251,9 +296,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 gv1.centerPoint.setDisappear();
 
                                 if (gv1.position_insert > -1) {
-                                    cout << "inserting " << endl;
                                     gv1.atoms.insert(gv1.atoms.begin() + gv1.position_insert, temp);
-                                    cout << "modifying atom" << endl;
                                     gm.addAtomToRing(gv1.position_insert - 1);
                                 }
                                 else if (gv1.position_insert == -1) {
@@ -287,15 +330,8 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                     while (gv1.atoms[index].getCirclePosition().x <= (position.x + 80)) {
                                         gv1.atoms[index].move(10, 10 * k);
                                         window.clear(sf::Color::Black);
-                                        window.draw(gv1.outsideCircle);
-                                        window.draw(gv1.scoreText);
-                                        gv1.centerPoint.draw1(window);
-                                        for (int i = 0; i < gv1.atoms.size(); i++) {
-
-                                            gv1.atoms[i].draw1(window);
-
-
-                                        }
+                                        gv1.draw(window);
+                                        gv2.draw(window);
                                         window.display();
                                     }
                                 }
@@ -303,24 +339,22 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                     while (gv1.atoms[index].getCirclePosition().x >= (position.x + 80)) {
                                         gv1.atoms[index].move((-10), (-10) * k);
                                         window.clear(sf::Color::Black);
-                                        window.draw(gv1.outsideCircle);
-                                        window.draw(gv1.scoreText);
-                                        gv1.centerPoint.draw1(window);
-                                        for (int i = 0; i < gv1.atoms.size(); i++) {
-
-                                            gv1.atoms[i].draw1(window);
-
-
-                                        }
+                                        gv1.draw(window);
+                                        gv2.draw(window);
                                         window.display();
                                     }
                                 }
 
-                                gv1.atoms[index].setPosition(position.x + 80, position.y + 194);
+                                gv1.atoms[index].setPosition(position.x + 80 , position.y + 194);
+
+
                                 checkAtoms(window);
 
                                 gv1.centerPoint.reset(gm.getCenterValue());
+
+                                gm.send_normal(gv1.position_insert);
                                 cout << "center value: " << gv1.centerPoint.getValue() << endl;
+
                             }
                             if (gv1.atoms.size() == 24) {
                                 GameOverView gov{1001,769,gm.getScore()};
@@ -379,5 +413,6 @@ int GameMultiController::Run(sf::RenderWindow &window) {
 
 
 }
+
 
 #endif //ATOMAS_GAMEMULTICONTROLLER_H

@@ -22,7 +22,9 @@ public:
     virtual int Run(sf::RenderWindow &window){
         std::string ip;
         std::string port;
+        boost::asio::io_service io_service;
         int input = 0;
+        int count = 0;
         while (window.isOpen()){
             sf::Event event;
             view.setPosition();
@@ -34,21 +36,25 @@ public:
                 if (event.type == sf::Event::MouseButtonPressed) {
                     if (event.mouseButton.button == sf::Mouse::Left) {
                         if(view.inOkText(event.mouseButton.x,event.mouseButton.y)){
+                            count++;
                             cout << "aloha" << endl;
-                            boost::asio::io_service io_service;
-                            Connection connection{"Mike", 2};
-                            //connection.connect(ip, port, io_service);
-                            connection.connect("192.168.1.25", "6996", io_service);
-                            connection.setup();
+                            if(count == 1){
+                                input = 3;
 
-                            GameMultiModel gm{};
+                                view.setTextStatus(input);
+                                view.draw(window,ip,port);
 
-                            connection.wait_to_start(gm.getAtomas(0),gm.getAtomas(1));
-                            GameMultiView gv1{gm.getAtomas(0).getRingSize(),1,0,20,180,150};
-                            GameMultiView gv2{gm.getAtomas(1).getRingSize(),1,500,20,180,150};
-                            GameMultiController gc {gv1,gv2,gm};
+                                GameMultiModel gm{ip,port,io_service};
 
-                            return gc.Run(window);
+                                //connection.wait_to_start(gm.getAtomas(0), gm.getAtomas(1));
+
+                                GameMultiView gv1{gm.getAtomas(0).getRingSize(), 1, 0, 20, 180, 150};
+                                GameMultiView gv2{gm.getAtomas(1).getRingSize(), 1, 500, 20, 180, 150};
+                                GameMultiController gc{gv1, gv2, gm};
+
+
+                                return gc.Run(window);
+                            }
                             //return 3;
                         }
                         else if(view.inIp(event.mouseButton.x,event.mouseButton.y)){

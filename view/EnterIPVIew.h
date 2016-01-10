@@ -135,8 +135,11 @@ public:
         else if(input == 1){
             status.setString("You are modifying IP address!");
         }
-        else{
+        else if(input == 2){
             status.setString("You are modifying port!");
+        }
+        else{
+            status.setString("Please wait for another player to connect .....");
         }
 
     }

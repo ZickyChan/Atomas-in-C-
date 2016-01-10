@@ -139,7 +139,18 @@ void AtomRing::move_to_index(int index) {
     this->index = index;
 }
 
-void AtomRing::add_atoms_from_data(Data data) {
+void AtomRing::add_atoms_from_data(Data &data) {
+    string value;
+    int count = 0;
+    while (true) {
+        value = data.get(to_string(count));
+        if (value == "ERROR") {
+            cout << value << endl;
+            break;
+        }
+        add_atom(count - 1, stoi(value), 0);
+        count++;
+    }
 
 }
 

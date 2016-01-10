@@ -354,6 +354,7 @@ int GameController::Run(sf::RenderWindow &window) {
                             }
 
                             gv.atoms[index].setPosition(position.x + 330, position.y + 194);
+
                             checkAtoms(window);
 
                                 gv.centerPoint.reset(gm.getCenterValue());
