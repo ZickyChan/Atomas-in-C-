@@ -75,7 +75,6 @@ public:
 
     void setValueForAtoms(GameModel &gm){
         for (int i=0;i<gm.getAtomRingSize();i++) {
-            cout << "GM VALUE: " << gm.getAtomValue(i) << endl;
             atoms[i].reset(gm.getAtomValue(i));
         }
     }

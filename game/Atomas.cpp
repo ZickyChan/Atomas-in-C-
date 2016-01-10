@@ -64,35 +64,35 @@ bool Atomas::player_to_ring(int index) {
 
 
 int Atomas::check_proton(int index) {
-    if(index >= 0) {
-        int combo = 0;
-        if (ring.get_size() < 3)
-            return combo;
-        int back_value = ring.get_atom(index - 1);
-        int forward_value = ring.get_atom(index + 1);
-        int value = ring.get_atom(index);
-        if (back_value == forward_value && back_value > 0) {
-            combo++;
-            score += back_value*2;
-
-            if (value  == 0)
-                ring.set_atom(index, back_value);
-            ring.addToAtom(index, 1);
-            cout << "new value of atom: " << ring.get_atom(index) << endl;
-            bool forward_deleted = ring.delete_atom(index + 1);
-            bool backward_deleted = ring.delete_atom(index - 1);
-            print();
-            if (forward_deleted && backward_deleted) {
-                if (index > 0)
-                    index--;
-                combo += check_proton(index);
-            }
-        }
+    int combo = 0;
+    if (ring.get_size() < 3)
         return combo;
+    int back_value = ring.get_atom(index - 1);
+    int forward_value = ring.get_atom(index + 1);
+    int value = ring.get_atom(index);
+    if (back_value == forward_value && back_value > 0) {
+        combo++;
+        score += back_value * 2;
+
+        if (value < back_value) {
+            ring.set_atom(index, back_value);
+            cout << "IN HERE BLAH BLAH BLAH " << value << endl;
+        }
+        ring.addToAtom(index, 1);
+        cout << "new value of atom: " << ring.get_atom(index) << endl;
+        cout << endl << endl;
+        print();
+        cout << endl << endl;
+        bool forward_deleted = ring.delete_atom(index + 1);
+        bool backward_deleted = ring.delete_atom(index - 1);
+        print();
+        if (index > 0)
+            index--;
+        combo += check_proton(index);
+
     }
-    else{
-        return -1;
-    }
+    return combo;
+
 }
 //
 //bool check_adjacent(Atom *atom) {

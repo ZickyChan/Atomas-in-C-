@@ -25,7 +25,12 @@ public:
      */
     Data(string j_string) {
         stringstream stream(j_string);
-        read_json(stream, tree);
+        try {
+            read_json(stream, tree);
+        }
+        catch(exception &e){
+            cout << j_string << endl;
+        }
     }
 
     /*

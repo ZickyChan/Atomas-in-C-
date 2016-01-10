@@ -24,11 +24,8 @@ public:
                 }
                 if (event.type == sf::Event::MouseButtonPressed) {
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        std::cout<< "mouse position x: " << event.mouseButton.x << " mouse position y: " <<event.mouseButton.y << std::endl;
 
-
-
-                        if(gov.inReplayText(event.mouseButton.x,event.mouseButton.y)){
+                        if(gov.inReplayText(event.mouseButton.x,event.mouseButton.y) && gov.getMode() == 1){
                             return 1;
 
                         }

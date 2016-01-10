@@ -75,6 +75,7 @@ void Connection::wait_to_start(Atomas &player, Atomas &opponent) {
 
 
     opponent.add_atoms(atoms);
+    opponent.replace_player_atom(player_atom);
     opponent.print();
 }
 

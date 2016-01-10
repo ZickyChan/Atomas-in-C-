@@ -41,15 +41,11 @@ public:
                             if (angle <= step) {
                                 break;
                             }
-
-                            /*gv.atoms[(index + i)%gv.atoms.size()].getCirclePosition().x > gv.atoms[index].getCirclePosition().x &&
-                            gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].getCirclePosition().x < gv.atoms[index].getCirclePosition().x*/
                             window.clear(sf::Color::Black);
 
                             t1.rotate(2.0, {250, 364});
                             t2.rotate(-2.0, {250, 364});
 
-                            //gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].ro
                             if ((gv1.atoms[index].getCirclePosition().y + 194) > 344) {
                                 gv1.atoms[(index + i) % gv1.atoms.size()].draw(window, t2);
                                 gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].draw(window, t1);
@@ -69,11 +65,12 @@ public:
 
 
                             }
+                            gv2.draw(window);
 
                             window.display();
                             step += i + 1;
                         }
-                        //gv1.setValueForScoreText(gm.getScore());
+                        gv1.setValueForScoreText(gm.getScore(1));
                         gv1.atoms[(index + i) % gv1.atoms.size()].setPosition(gv1.atoms[index].getCirclePosition().x,
                                                                               gv1.atoms[index].getCirclePosition().y);
                         gv1.atoms[(index - i + gv1.atoms.size()) % gv1.atoms.size()].setPosition(
@@ -122,13 +119,14 @@ public:
         do {
             Data data(gm.read());
             type = data.get("type");
+
+            cout << "type receive: " << type << endl;
             if(type == "normal"){
                 int index = stoi(data.get("index"));
                 int new_atom = stoi(data.get("new atom"));
 
                 gv2.position_insert = index;
                 AtomDisplay temp{gv2.centerPoint};
-                //gv2.centerPoint.setDisappear();
 
                 if (gv2.position_insert > -1) {
                     gv2.atoms.insert(gv2.atoms.begin() + gv2.position_insert, temp);
@@ -145,7 +143,7 @@ public:
                         gv2.atoms[i].setPosition(position.x + 80 + gv2.offsetX, position.y + 194);
                 }
 
-                gm.setNewCenterValue(new_atom);
+
                 gv2.centerPoint.reset(new_atom);
 
                 gm.print2();
@@ -157,6 +155,7 @@ public:
                     if (gm.getRing2().get_atom(index) == PROTON) {
                         combo = gm.check_proton2(index);
                         if(combo > 0) {
+                            gv2.setValueForScoreText(gm.getScore(2));
                             for (int i = combo * 2; i > 0; i--) {
                                 gv2.atoms.pop_back();
                             }
@@ -179,6 +178,7 @@ public:
                 }
 
                 cout << endl << endl << "RING 2 IS:    " << endl;
+                gm.setNewCenterValue(new_atom);
                 gm.print2();
 
 
@@ -186,6 +186,8 @@ public:
             else if(type == "minus"){
                 int index = stoi(data.get("index"));
                 int new_atom = stoi(data.get("new atom"));
+
+                cout << "minus index received: " << index << endl;
                 gm.deleteAtom2(index);
                 gv2.atoms.pop_back();
                 gv2.setValueForAtoms(gm,2);
@@ -200,6 +202,34 @@ public:
                 }
                 gm.setNewCenterValue(new_atom);
                 gv2.centerPoint.reset(new_atom);
+
+                index = 0;
+                int combo = 0;
+                while (index < gm.getRing2().get_size()) {
+                    if (gm.getRing2().get_atom(index) == PROTON) {
+                        combo = gm.check_proton2(index);
+                        if(combo > 0) {
+                            gv2.setValueForScoreText(gm.getScore(2));
+                            for (int i = combo * 2; i > 0; i--) {
+                                gv2.atoms.pop_back();
+                            }
+                            gv2.insideCircle.setPointCount(gm.getAtomRing2Size());
+                            gv2.setValueForAtoms(gm,2);
+                            for (int i = 0; i < gv2.insideCircle.getPointCount(); i++) {
+                                sf::Vector2f position = gv2.insideCircle.getPoint(i);
+                                gv2.atoms[i].setPosition(position.x + 80 + gv2.offsetX, position.y + 194);
+                            }
+                            index = 0;
+                            combo = 0;
+                        }
+                        else{
+                            index++;
+                        }
+                    }
+                    else{
+                        index++;
+                    }
+                }
             }
         }while(type != "END");
     }
@@ -251,13 +281,15 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                             gm.addAtomToRing(gm.getAtomRingSize() - 1);
 
 
-                            gv1.centerPoint.reset(gm.getCenterValue());
+                            gv1.centerPoint.reset(gm.getCenterValue(1));
 
                             gv1.insideCircle.setPointCount(gm.getAtomRingSize());
                             for (int i = 0; i < gv1.insideCircle.getPointCount(); i++) {
                                 sf::Vector2f position = gv1.insideCircle.getPoint(i);
-                                gv1.atoms[i].setPosition(position.x + 165, position.y + 294);
+                                gv1.atoms[i].setPosition(position.x + 80, position.y + 194);
                             }
+
+                            gm.send_normal(-1);
 
                         }
                         else {
@@ -400,17 +432,21 @@ int GameMultiController::Run(sf::RenderWindow &window) {
 
                                 checkAtoms(window);
 
-                                gv1.centerPoint.reset(gm.getCenterValue());
+                                gv1.centerPoint.reset(gm.getCenterValue(1));
 
                                 gm.send_normal(gv1.position_insert);
                                 cout << "center value: " << gv1.centerPoint.getValue() << endl;
 
                             }
-                            if (gv1.atoms.size() == 24) {
-                                GameOverView gov{1001,769,gm.getScore()};
+                            if (gv1.atoms.size() == 24 || gv2.atoms.size() == 24)  {
+                                GameOverView gov{1001,769,gm.getScore(1),2};
+                                if (gv1.atoms.size() == 24){
+                                    gov.setGameState(0);
+                                }
+                                else{
+                                    gov.setGameState(1);
+                                }
                                 GameOverController goc{gov};
-                                gm.restart();
-                                //gv1.restart(gm);
                                 return goc.Run(window);
                             }
                             cout << "done" << endl;
@@ -426,6 +462,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                          2) <=
                                 std::pow(gv1.atoms[i].getCircleRadius(), 2)) {
                                 gm.deleteAtom(i);
+                                cout << "delete index: " << i << endl;
                                 gv1.atoms.pop_back();
                                 gv1.setValueForAtoms(gm,1);
                                 gv1.numPoints = gm.getAtomRingSize();
@@ -438,7 +475,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
 
                                 }
                                 checkAtoms(window);
-                                gv1.centerPoint.reset(gm.getCenterValue());
+                                gv1.centerPoint.reset(gm.getCenterValue(1));
                                 gm.send_minus(i);
                                 break;
                             }

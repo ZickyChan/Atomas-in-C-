@@ -60,8 +60,9 @@ bool AtomRing::delete_atom(int index) {
     }
     if (size == 1) {
         if (free_atom(atom)) {
-            atom = nullptr;
             size--;
+            atom = nullptr;
+
             return true;
         }
         cout << "ATOM NOT DELETED2" << endl;
@@ -71,10 +72,11 @@ bool AtomRing::delete_atom(int index) {
         move_to_index(index);
         back();
         if (free_atom(atom->next)) {
+            size--;
             atom->next = nullptr;
             atom->last = nullptr;
             this->index = 0;
-            size--;
+
             return true;
         }
         cout << "ATOM NOT DELETED3" << endl;
@@ -84,11 +86,12 @@ bool AtomRing::delete_atom(int index) {
     back();
     Atom *temp = atom->next->next;
     if (free_atom(atom->next)) {
+        size--;
         atom->next = temp;
         temp->last = atom;
         if (index == 0)
             decrement_index();
-        size--;
+        cout << endl << endl << "deleted index: " << index << endl << endl ;
         return true;
     }
     cout << "ATOM NOT DELETED4" << endl;
@@ -122,20 +125,29 @@ void AtomRing::print() {
         current = current->next;
     }
     cout << endl;
+    cout << "GET ANOTHER: " << endl;
+    for (int i = 0; i < size; i++){
+        cout << get_atom(i) << " ";
+    }
+    cout << endl;
 }
 
 void AtomRing::move_to_index(int index) {
-    while (index < 0) {
+    while (index < 0 && size > 0) {
         index += size;
     }
     index = index % size;
     int count = this->index - index;
-    if (count < 0)
-        for (int i = count; i != 0; i++)
+    if (count < 0) {
+        for (int i = count; i != 0; i++) {
             forward();
-    else if (count > 0)
-        for (int i = count; i != 0; i--)
+        }
+    }
+    else if (count > 0) {
+        for (int i = count; i != 0; i--) {
             back();
+        }
+    }
     this->index = index;
 }
 

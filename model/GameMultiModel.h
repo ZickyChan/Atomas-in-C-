@@ -30,18 +30,20 @@ public:
     }
 
     int getAtomValue(int index){
-        Atom *temp = atomas1.getRing().get_atom_pointer(index);
-        return temp->atom;
+        return atomas1.getRing().get_atom(index);//temp->atom;
     }
 
     int getAtomValue2(int index){
-        Atom *temp = atomas2.getRing().get_atom_pointer(index);
-        return temp->atom;
+        return atomas2.getRing().get_atom(index);
     }
 
-    int getCenterValue(){
-        //cout << " value: " << atomas1.getPlayerAtom() << endl;
-        return atomas1.getPlayerAtom();
+    int getCenterValue(int mode){
+        if(mode == 1) {
+            return atomas1.getPlayerAtom();
+        }
+        else{
+            return atomas2.getPlayerAtom();
+        }
     }
 
 
@@ -69,8 +71,13 @@ public:
         return atomas2.check_proton(index);
     }
 
-    int getScore(){
-        return atomas1.getScore();
+    int getScore(int mode){
+        if(mode == 1) {
+            return atomas1.getScore();
+        }
+        else{
+            return atomas2.getScore();
+        }
     }
 
     void setNewCenterValue(){
@@ -89,13 +96,6 @@ public:
         return atomas2.getRing();
     }
 
-    void restart(){
-        Atomas a{6};
-        //a.printGame();
-        atomas1 = a;
-        atomas1.addAtoms(6);
-        //atomas1.printGame();
-    }
 
     Atomas &getAtomas(int i){
         if(i==0){
@@ -108,7 +108,7 @@ public:
     void send_normal(int index) {
         Data data;
         data.put("index", index);
-        data.put("new atom",getCenterValue());
+        data.put("new atom",getCenterValue(1));
         data.put("type","normal");
         data.put("id",connection.connection_id());
         connection.send(data.to_json());
@@ -117,7 +117,7 @@ public:
     void send_minus(int index) {
         Data data;
         data.put("index", index);
-        data.put("new atom",getCenterValue());
+        data.put("new atom",getCenterValue(1));
         data.put("type","minus");
         data.put("id",connection.connection_id());
         connection.send(data.to_json());

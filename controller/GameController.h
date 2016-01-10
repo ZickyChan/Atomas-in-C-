@@ -357,7 +357,7 @@ int GameController::Run(sf::RenderWindow &window) {
                                 gv.centerPoint.reset(gm.getCenterValue());
                             }
                             if (gv.atoms.size() == 24) {
-                                GameOverView gov{1001,769,gm.getScore()};
+                                GameOverView gov{1001,769,gm.getScore(),1};
                                 GameOverController goc{gov};
                                 gm.restart();
                                 gv.restart(gm);

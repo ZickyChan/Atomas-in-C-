@@ -10,7 +10,7 @@
 
 class GameOverView{
 public:
-    GameOverView(int width, int height,int score):scr_width{width},scr_height{height},scoreValue{score}{ }
+    GameOverView(int width, int height,int score, int mode):scr_width{width},scr_height{height},scoreValue{score}, mode{mode}{ }
     GameOverView(GameOverView &mv){
         scr_height = mv.scr_height;
         scr_width = mv.scr_width;
@@ -18,12 +18,13 @@ public:
         scoreValue = mv.scoreValue;
         replay = mv.replay;
         back_to_menu = mv.back_to_menu;
+        mode = mv.mode;
     }
     void setPosition(){
         font1.loadFromFile("libelsuit.ttf");
 
         score.setFont(font1);
-        score.setCharacterSize(80);
+        score.setCharacterSize(60);
         score.setColor(sf::Color::White);
         score.setString(std::to_string(scoreValue));
 
@@ -57,6 +58,26 @@ public:
         back_to_menu.setPosition(sf::Vector2f(scr_width/2.0f + 100,scr_height/2.0f));
 
     }
+
+    void setGameState(int state){
+        game_state.setFont(font1);
+        game_state.setCharacterSize(80);
+        game_state.setColor(sf::Color::White);
+
+        if(state == 1){
+            game_state.setString("You Win!!!");
+        }
+        else{
+            game_state.setString("Loser!!!");
+        }
+        //center Title
+        sf::FloatRect textRect = game_state.getLocalBounds();
+        game_state.setOrigin(textRect.left + textRect.width/2.0f,
+                        textRect.top  + textRect.height/2.0f);
+        game_state.setPosition(sf::Vector2f(scr_width/2.0f,scr_height/2.0f - 300));
+
+    }
+
     bool inReplayText(int x, int y){
         bool result;
         sf::FloatRect replayRect = replay.getLocalBounds();
@@ -81,16 +102,27 @@ public:
     void draw(sf::RenderWindow &window){
         window.clear();
         window.draw(score);
-        window.draw(replay);
+        if(mode == 1) {
+            window.draw(replay);
+        }
+        else{
+            window.draw(game_state);
+        }
         window.draw(back_to_menu);
         window.display();
+    }
+
+    int getMode(){
+        return mode;
     }
 private:
     int scr_width;
     int scr_height;
     int scoreValue;
+    int mode;
     sf::Text score;
     sf::Text replay;
+    sf::Text game_state;
     sf::Text back_to_menu;
     sf::Font font1;
 };

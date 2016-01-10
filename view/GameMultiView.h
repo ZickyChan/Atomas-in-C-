@@ -27,7 +27,7 @@ public:
     }
 
     void setPosition(){
-        //setUpScoreText();
+        setUpScoreText();
 
         cout << "score text X: " << scoreText.getPosition().x << " Y: "  << scoreText.getPosition().y << endl;
 
@@ -72,7 +72,7 @@ public:
     void draw(sf::RenderWindow &window){
 
         window.draw(outsideCircle);
-        //window.draw(scoreText);
+        window.draw(scoreText);
         centerPoint.draw1(window);
 
         for (int i = 0; i < atoms.size(); i++) {
@@ -87,47 +87,36 @@ public:
         if(mode == 1) {
             for (int i = 0; i < gm.getAtomRingSize(); i++) {
                 atoms[i].reset(gm.getAtomValue(i));
-                cout << "each value of ring: " << gm.getAtomValue(i) << endl;
+                cout << "each value of ring 1 : " << gm.getAtomValue(i) << endl;
             }
         }
         else{
             for (int i = 0; i < gm.getAtomRing2Size(); i++) {
                 atoms[i].reset(gm.getAtomValue2(i));
+                cout << "each value of ring 2 : " << gm.getAtomValue2(i) << endl;
             }
         }
     }
-//
-//    void restart(GameModel &gm){
-//        for(int i=atoms.size();i>gm.getAtomRingSize();i--) {
-//            atoms.pop_back();
-//            cout << "i is: " << i << endl;
-//        }
-//        cout << "game score: " << gm.getScore();
-//        scoreText.setString("0");
-//        scoreText.setColor(sf::Color::White);
-//        insideCircle.setPointCount(gm.getAtomRingSize());
-//        setValueForAtoms(gm);
-//        centerPoint.reset(gm.getCenterValue());
-//    }
-//
-//    void setValueForScoreText(int val){
-//        scoreText.setString(std::to_string(val));
-//    }
-//
-//    void setUpScoreText(){
-//        font1.loadFromFile("libelsuit.ttf");
-//
-//        scoreText.setFont(font1);
-//        scoreText.setCharacterSize(60);
-//        scoreText.setColor(sf::Color::White);
-//
-//
-//        //center text
-//        sf::FloatRect textRect = scoreText.getLocalBounds();
-//        scoreText.setOrigin(textRect.left + textRect.width/2.0f,
-//                            textRect.top  + textRect.height/2.0f);
-//        scoreText.setPosition(sf::Vector2f(1001/2.0f,50));
-//    }
+
+
+    void setValueForScoreText(int val){
+        scoreText.setString(std::to_string(val));
+    }
+
+    void setUpScoreText(){
+        font1.loadFromFile("libelsuit.ttf");
+
+        scoreText.setFont(font1);
+        scoreText.setCharacterSize(60);
+        scoreText.setColor(sf::Color::White);
+
+
+        //center text
+        sf::FloatRect textRect = scoreText.getLocalBounds();
+        scoreText.setOrigin(textRect.left + textRect.width/2.0f,
+                            textRect.top  + textRect.height/2.0f);
+        scoreText.setPosition(sf::Vector2f(500/2.0f + offsetX,50));
+    }
 
     int numPoints;
     int position_insert;

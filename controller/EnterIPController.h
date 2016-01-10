@@ -48,8 +48,8 @@ public:
 
                                 //connection.wait_to_start(gm.getAtomas(0), gm.getAtomas(1));
 
-                                GameMultiView gv1{gm.getAtomas(0).getRingSize(), 1, 0, 20, 180, 150};
-                                GameMultiView gv2{gm.getAtomas(1).getRingSize(), 1, 500, 20, 180, 150};
+                                GameMultiView gv1{gm.getAtomas(0).getRingSize(), gm.getCenterValue(1), 0, 20, 180, 150};
+                                GameMultiView gv2{gm.getAtomas(1).getRingSize(), gm.getCenterValue(2), 500, 20, 180, 150};
                                 GameMultiController gc{gv1, gv2, gm};
 
 
