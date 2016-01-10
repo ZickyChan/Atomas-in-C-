@@ -26,17 +26,16 @@ public:
         offsetX = gv.offsetX;
     }
 
+    /* Set the postion for every contents of the view */
     void setPosition(){
         setUpScoreText();
-
-        cout << "score text X: " << scoreText.getPosition().x << " Y: "  << scoreText.getPosition().y << endl;
 
         //Set the format and position for outside circle
         outsideCircle.setFillColor(sf::Color::Transparent);
         outsideCircle.setOutlineThickness(1);
         outsideCircle.setOutlineColor(sf::Color(250, 150, 100));
         outsideCircle.setPosition(70 + offsetX,184);
-        cout << "blah" << endl;
+
         //Set the format and position for inside circle
         insideCircle.setFillColor(sf::Color::Transparent);
         insideCircle.setPosition(100 + offsetX,194);
@@ -54,18 +53,18 @@ public:
 
     }
 
+    /*
+     * This function is used to add the atom display when it is null
+     */
     void addAtomDisplay(Atomas &a){
-        cout << atoms.size();
         Atom *atom = a.getRing().get_atom_pointer(0);
         if(atoms.size() == 0) {
             for (int i = 0; i < a.getRingSize(); i++) {
                 AtomDisplay shape{atom->atom, 20};
                 atoms.push_back(shape);
-                //cout << a.get_index_atom(i)->atom << " ";
                 atom = atom->next;
             }
             cout << endl;
-            //gm.Print();
         }
     }
 
@@ -83,6 +82,11 @@ public:
 
     }
 
+    /*
+     * This function is used to reset the atoms display
+     * mode is used to distinguish which Game Multi View wished to be changed
+     */
+
     void setValueForAtoms(GameMultiModel &gm, int mode){
         if(mode == 1) {
             for (int i = 0; i < gm.getAtomRingSize(); i++) {
@@ -99,10 +103,14 @@ public:
     }
 
 
+    /*
+     * This is used to set the score text
+     */
     void setValueForScoreText(int val){
         scoreText.setString(std::to_string(val));
     }
 
+    /* Format the score text*/
     void setUpScoreText(){
         font1.loadFromFile("libelsuit.ttf");
 

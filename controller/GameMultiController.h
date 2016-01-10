@@ -117,10 +117,19 @@ public:
         float y0,x0,k;
 
         do {
+            //Read data from server
             Data data(gm.read());
             type = data.get("type");
 
             cout << "type receive: " << type << endl;
+
+            /*
+             * If data sent is normal, get the index and the new center atom
+             * insert the old center atom into the ring with the index just got
+             * Reset the atom ring 2 display
+             * Reset the center atom with the new atom value just got
+             * Check if there is any combos for ring 2
+             */
             if(type == "normal"){
                 int index = stoi(data.get("index"));
                 int new_atom = stoi(data.get("new atom"));
@@ -183,11 +192,17 @@ public:
 
 
             }
+                /*
+            * If data sent is minus, get the index and the new center atom
+            * Remove the atom of ring 2 with the gotten index
+            * Reset the atom ring 2 display
+            * Reset the center atom with the new atom value just got
+            * Check if there is any combos for ring 2
+            */
             else if(type == "minus"){
                 int index = stoi(data.get("index"));
                 int new_atom = stoi(data.get("new atom"));
 
-                cout << "minus index received: " << index << endl;
                 gm.deleteAtom2(index);
                 gv2.atoms.pop_back();
                 gv2.setValueForAtoms(gm,2);
@@ -268,6 +283,12 @@ int GameMultiController::Run(sf::RenderWindow &window) {
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     cout << "left click " << endl;
+
+                    /*
+                     * Check if user clicked inside the out side circle 1, the circle of the user
+                     * Find where user clicked, check if it is between any 2 atoms that is next to each other
+                     * If it is a valid click, add atom to the ring 1
+                     */
                     if (std::pow((event.mouseButton.x - 250), 2) + std::pow((event.mouseButton.y - 364), 2) <=
                         std::pow(180, 2) &&
                         std::pow((event.mouseButton.x - 250), 2) + std::pow((event.mouseButton.y - 364), 2) >
@@ -302,17 +323,17 @@ int GameMultiController::Run(sf::RenderWindow &window) {
 
                                 r = 150;
 
-                                //The point which is finding have x and y match the linear equation above and have the length equal to the radius of the circle
-                                //Therefore we have 2 equations to find the y coordinate of the point
-                                // (x - x0)^2 + (y - y0)^2 = r^2
-                                // y = k(x - x0) + b0
-                                //After do the calculation, I come up with the equation to find y
-                                // ay^2 + by + c = 0
-                                //While a = 1
-                                // b = -2y0
-                                // c = (r^2) / (1/(k^2) + 1 )
-
-                                //Calculate b,c
+                                /* The point which is finding have x and y match the linear equation above and have the length equal to the radius of the circle
+                                * Therefore we have 2 equations to find the y coordinate of the point
+                                * (x - x0)^2 + (y - y0)^2 = r^2
+                                * y = k(x - x0) + b0
+                                * After do the calculation, I come up with the equation to find y
+                                * ay^2 + by + c = 0
+                                * While a = 1
+                                * b = -2y0
+                                * c = (r^2) / (1/(k^2) + 1 )
+                                * Calculate b,c
+                                */
                                 b = (-2) * y0;
                                 c = y0 * y0 - (r * r) / ((1 / (k * k)) + 1);
 
@@ -328,7 +349,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                     valY = roots[1];
                                 }
 
-
+                                //Find the position to insert the center atom to atoms ring base on the event moue click
                                 if (i < gv1.insideCircle.getPointCount() - 1) {
                                     //Round the postion y to 3 decimal places
                                     float y1 = roundf(gv1.insideCircle.getPoint(i).y * 1000)/ 1000;
@@ -373,6 +394,9 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 }
                             }
 
+                            //If the center atom could be inserted in the ring 1
+                            //Then add into the atomas ring 1
+                            //Display the animation
                             if(gv1.position_insert != -2) {
                                 AtomDisplay temp{gv1.centerPoint};
                                 gv1.centerPoint.setDisappear();
@@ -438,8 +462,12 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 cout << "center value: " << gv1.centerPoint.getValue() << endl;
 
                             }
+
+                            //If the player 1's of player 2's ring reached 24 atoms. that player will lose, game will end
                             if (gv1.atoms.size() == 24 || gv2.atoms.size() == 24)  {
                                 GameOverView gov{1001,769,gm.getScore(1),2};
+
+                                //If it is player 1 ring reaches 24 atoms, notice the game over view
                                 if (gv1.atoms.size() == 24){
                                     gov.setGameState(0);
                                 }
@@ -453,7 +481,12 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                         }
                     }
                     else if (gv1.centerPoint.getValue() == -1) {
-                        cout << "minus" <<endl;
+                        /* Check if user clicked into any atoms of the ring
+                             * Delete that atom with the index i
+                             * Reduce the atom display size by 1
+                             * Check if there is any combos can be made
+                             * Draw the ring again
+                             */
                         for (int i = 0; i < gv1.insideCircle.getPointCount(); i++) {
                             if (std::pow((event.mouseButton.x -
                                           (gv1.atoms[i].getCirclePosition().x + gv1.atoms[i].getCircleRadius())), 2) +
@@ -466,7 +499,6 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 gv1.atoms.pop_back();
                                 gv1.setValueForAtoms(gm,1);
                                 gv1.numPoints = gm.getAtomRingSize();
-                                //gv.centerPoint.reset(gm.getCenterValue());
 
                                 gv1.insideCircle.setPointCount(gv1.numPoints);
                                 for (int i = 0; i < gv1.insideCircle.getPointCount(); i++) {
@@ -476,6 +508,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 }
                                 checkAtoms(window);
                                 gv1.centerPoint.reset(gm.getCenterValue(1));
+                                //Send data to server with minus type
                                 gm.send_minus(i);
                                 break;
                             }

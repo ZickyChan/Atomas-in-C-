@@ -24,6 +24,7 @@ public:
         scoreText = gv.scoreText;
     }
 
+    /*This function is used to set the position for every components of the view */
     void setPosition(){
         setUpScoreText();
 
@@ -60,25 +61,26 @@ public:
 
     }
 
+    /*
+     * This function is used to add the atom display when it is null
+     */
     void addAtomDisplay(GameModel &gm){
-        cout << atoms.size();
         if(atoms.size() == 0) {
             for (int i = 0; i < gm.getAtomRingSize(); i++) {
                 AtomDisplay shape{gm.getAtomValue(i), 20};
                 atoms.push_back(shape);
-                cout << gm.getAtomValue(i) << " ";
             }
-            cout << endl;
-            gm.Print();
         }
     }
 
+    /*Reset the value for the atom display */
     void setValueForAtoms(GameModel &gm){
         for (int i=0;i<gm.getAtomRingSize();i++) {
             atoms[i].reset(gm.getAtomValue(i));
         }
     }
 
+    /*This function is used to reset the game */
     void restart(GameModel &gm){
         for(int i=atoms.size();i>gm.getAtomRingSize();i--) {
             atoms.pop_back();
@@ -97,6 +99,7 @@ public:
         scoreText.setString(std::to_string(val));
     }
 
+    /*Format the score text view */
     void setUpScoreText(){
         font1.loadFromFile("libelsuit.ttf");
 

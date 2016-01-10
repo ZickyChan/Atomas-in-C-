@@ -34,34 +34,11 @@ void Atomas::replace_player_atom(int player_atom) {
 
 bool Atomas::player_to_ring(int index) {
     bool replace = true;
-//    if (player_atom == ELECTRON) {
-//        player_atom = ring.get_atom(index);
-//        ring.delete_atom(index);
-//        replace = false;
-//    }
     ring.add_atom(index, player_atom, 0);
     set_max();
 
-    //check_protons();
     return replace;
 }
-
-//
-//int Atomas::check_protons() {
-//    int index = 0;
-//    int combo = 0;
-//    while (index < ring.get_size()) {
-//        if (ring.get_atom(index) == PROTON) {
-//            int delta_combo = check_adjacent(index);
-//            if (delta_combo > 0) {
-//                combo += delta_combo;
-//            }
-//        }
-//    }
-//    return combo;
-//}
-
-
 
 int Atomas::check_proton(int index) {
     int combo = 0;
@@ -94,39 +71,7 @@ int Atomas::check_proton(int index) {
     return combo;
 
 }
-//
-//bool check_adjacent(Atom *atom) {
-//    if (atom != nullptr && atom->last != nullptr && atom->next != nullptr && atom->next->atom > PROTON && atom->last != atom->next)
-//        return atom->last->atom == atom->next->atom;
-//    return false;
-//}
 
-
-//int Atomas::check_proton() {
-//    int deleted = 0;
-//    if (check_adjacent(ring.get_atom())) {
-//        int index = ring.deleteNextAtom();
-//        ring.deleteLastAtom();
-//
-//        if (ring.get_atom()->atom == 0) {
-//            ring.addToAtom(++index);
-//        }
-//        else if (ring.get_atom()->atom > index)
-//            ring.addToAtom(1);
-//        else
-//            ring.setAtom(index + 2);
-//        score += index*2;
-//        deleted += check_proton() + 2;
-//        if(this->index > 0 ){
-//            this->index--;
-//        }
-//    }
-//    ring.printRing();
-//    if (ring.get_size() == 1){
-//        this->index = 0;
-//    }
-//    return deleted;
-//}
 
 void Atomas::addAtoms(int count) {
     for (int i = 0; i < count; i++) {
@@ -145,18 +90,6 @@ void Atomas::print() {
     ring.print();
     cout << "Player: " << player_atom << endl;
 }
-
-//Atom *Atomas::get_index_atom(int index) {
-//    Atom *current = ring.get_atom();
-//    int count = this->index - index;
-//    if (count < 0)
-//        for (int i = count; i != 0; i++)
-//            current = current->next;
-//    else if (count > 0)
-//        for (int i = count; i != 0; i--)
-//            current = current->last;
-//    return current;
-//}
 
 
 void Atomas::add_ring_data(Data &data) {

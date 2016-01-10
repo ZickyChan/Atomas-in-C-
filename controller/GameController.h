@@ -41,15 +41,23 @@ float* rootOfEquation(float a, float b, float c){
     return result;
 }
 
+//This function is used to calculate the angle between the 2 atoms
+//a1 and a2 represent the atoms that is going to be found the angle
+//radius is the radius of the circle that both atoms are placed on
 float calculateAngle(AtomDisplay &a1, AtomDisplay &a2,int radius){
+
+    //x1,y1 is the top point of the atom a1
     float x1 = a1.getCirclePosition().x + 330 + a1.getCircleRadius();
     float y1 = a1.getCirclePosition().y + 194;
 
+    //x2,y2 is the top point of the atom a2
     float x2 = a2.getCirclePosition().x + 330 + a2.getCircleRadius();
     float y2 = a2.getCirclePosition().y + 194;
 
+    //Find the distance between 2 top points
     float length = sqrt(pow(x2-x1,2) + pow(y2-y1,2));
 
+    //Calculate and return the angle
     return (asin (length/(2*radius)) * 180.0 / PI);
 
 }
@@ -60,30 +68,38 @@ public:
 
     }
 
+    //This function is used to check if there is a PROTON in the ring
+    //If there is a PROTON, check if there is any combos
+    //If there are combos, do the animation
     void checkAtoms(sf::RenderWindow &window){
         int index = 0;
         int combo = 0;
-        cout << "checking atom" << endl;
+        //Loop the ring, find the position of the PROTON
         while (index < gm.getRing().get_size()) {
             if (gm.getRing().get_atom(index) == PROTON) {
+                //Get how many combo can be made from the PROTON
                 combo = gm.check_proton(index);
-                cout << "combo: " << combo << endl;
+                
+                //If there is a combo, do the animation
                 if (combo > 0) {
                     sf::Transform t1;
                     sf::Transform t2;
                     for (int i = 1; i <= (combo); i++) {
+
+                        //Calculate the angle to rotate
                         float angle = calculateAngle(gv.atoms[(index + i) % gv.atoms.size()], gv.atoms[index], 150);
+
+                        //step is used to set how many time do the transform
                         int step = 0;
                         while (true) {
                             if (angle <= step) {
                                 break;
                             }
 
-                            /*gv.atoms[(index + i)%gv.atoms.size()].getCirclePosition().x > gv.atoms[index].getCirclePosition().x &&
-                            gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].getCirclePosition().x < gv.atoms[index].getCirclePosition().x*/
                             window.clear(sf::Color::Black);
-
+                            //t1 transform is used for the atom to the left of the PROTON
                             t1.rotate(2.0, {500, 364});
+                            //t2 transform is used for the atom to the right of the PROTON
                             t2.rotate(-2.0, {500, 364});
 
                             //gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].ro
@@ -132,6 +148,8 @@ public:
 
                     }
 
+                    //After finish the animation, reduce the size of the atoms ring display and draw it on screen
+
                     for (int i = gv.atoms.size(); i > gm.getAtomRingSize(); i--) {
                         gv.atoms.pop_back();
                     }
@@ -140,7 +158,6 @@ public:
                     for (int i = 0; i < gv.insideCircle.getPointCount(); i++) {
                         sf::Vector2f position = gv.insideCircle.getPoint(i);
                         gv.atoms[i].setPosition(position.x + 330, position.y + 194);
-                        //gv.atoms[i].draw1(window);
                     }
                     index = 0;
                     combo = 0;
@@ -153,6 +170,8 @@ public:
                 index++;
             }
         }
+
+        //reset the center value
         gm.setNewCenterValue();
     }
 
@@ -181,11 +200,18 @@ int GameController::Run(sf::RenderWindow &window) {
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
+
+                    //If user click inside the outSideCircle and don't click too close to the center(away from the center 50 px)
+                    //And the center value must not be -1
+                    //Do the animation to shoot the center value to the ring
+                    //Check if there is any PROTON that could make combo
                     if (std::pow((event.mouseButton.x - 500), 2) + std::pow((event.mouseButton.y - 364), 2) <=
                         std::pow(180, 2) && std::pow((event.mouseButton.x - 500), 2) + std::pow((event.mouseButton.y - 364), 2) >
                                             std::pow(50, 2)
                             && gv.centerPoint.getValue() != (-1)
                             ) {
+
+                        //If there is only an atom in ring
                         if (gv.insideCircle.getPointCount() == 1) {
                             AtomDisplay temp{gv.centerPoint};
 
@@ -212,17 +238,17 @@ int GameController::Run(sf::RenderWindow &window) {
 
                                 r = 150;
 
-                                //The point which is finding have x and y match the linear equation above and have the length equal to the radius of the circle
-                                //Therefore we have 2 equations to find the y coordinate of the point
-                                // (x - x0)^2 + (y - y0)^2 = r^2
-                                // y = k(x - x0) + b0
-                                //After do the calculation, I come up with the equation to find y
-                                // ay^2 + by + c = 0
-                                //While a = 1
-                                // b = -2y0
-                                // c = (r^2) / (1/(k^2) + 1 )
-
-                                //Calculate b,c
+                                /* The point which is finding have x and y match the linear equation above and have the length equal to the radius of the circle
+                                 * Therefore we have 2 equations to find the y coordinate of the point
+                                 * (x - x0)^2 + (y - y0)^2 = r^2
+                                 * y = k(x - x0) + b0
+                                 * After do the calculation, I come up with the equation to find y
+                                 * ay^2 + by + c = 0
+                                 * While a = 1
+                                 * b = -2y0
+                                 * c = (r^2) / (1/(k^2) + 1 )
+                                 * Calculate b,c
+                                 */
                                 b = (-2) * y0;
                                 c = y0 * y0 - (r * r) / ((1 / (k * k)) + 1);
 
@@ -238,13 +264,12 @@ int GameController::Run(sf::RenderWindow &window) {
                                     valY = roots[1];
                                 }
 
-
+                                //Find the position to insert the center atom to atoms ring base on the event moue click
                                 if (i < gv.insideCircle.getPointCount() - 1) {
                                     float y1 = roundf(gv.insideCircle.getPoint(i).y * 1000)/ 1000;
                                     float y2  = roundf(gv.insideCircle.getPoint(i + 1).y * 1000)/ 1000;
 
-                                    //gv.insideCircle.getPoint(i+1).y = roundf(gv.insideCircle.getPoint(i+1).y * 1000)/ 1000;
-                                    if (/*gv.insideCircle.getPoint(i).y != gv.insideCircle.getPoint(i + 1).y*/y1!=y2) {
+                                    if (y1!=y2) {
                                         if (valY > (gv.insideCircle.getPoint(i).y + 194) &&
                                             valY < (gv.insideCircle.getPoint(i + 1).y + 194) &&
                                             event.mouseButton.x > 500) {
@@ -275,6 +300,7 @@ int GameController::Run(sf::RenderWindow &window) {
                                         gv.position_insert = -1;
 
                                     }
+                                        //If the place that user clicked is not in between any 2 atoms that are side by side, position insert will be -2
                                     else {
                                         gv.position_insert = -2;
                                     }
@@ -282,6 +308,9 @@ int GameController::Run(sf::RenderWindow &window) {
                                 }
                             }
 
+                            //If the center atom could be inserted in the ring
+                            //Then add into the atomas ring
+                            //Display the animation
                             if(gv.position_insert != -2) {
                             AtomDisplay temp{gv.centerPoint};
                             gv.centerPoint.setDisappear();
@@ -356,6 +385,8 @@ int GameController::Run(sf::RenderWindow &window) {
 
                                 gv.centerPoint.reset(gm.getCenterValue());
                             }
+
+                            //If the ring reached the size of 24 atoms, game will end
                             if (gv.atoms.size() == 24) {
                                 GameOverView gov{1001,769,gm.getScore(),1};
                                 GameOverController goc{gov};
@@ -367,8 +398,17 @@ int GameController::Run(sf::RenderWindow &window) {
                             gm.Print();
                         }
                     }
+
+                        //If the center Atom is -1
                     else if (gv.centerPoint.getValue() == -1) {
                         for (int i = 0; i < gv.insideCircle.getPointCount(); i++) {
+
+                            /* Check if user clicked into any atoms of the ring
+                             * Delete that atom with the index i
+                             * Reduce the atom display size by 1
+                             * Check if there is any combos can be made
+                             * Draw the ring again
+                             */
                             if (std::pow((event.mouseButton.x -
                                               (gv.atoms[i].getCirclePosition().x + gv.atoms[i].getCircleRadius())), 2) +
                                     std::pow((event.mouseButton.y -
@@ -379,7 +419,6 @@ int GameController::Run(sf::RenderWindow &window) {
                                     gv.atoms.pop_back();
                                     gv.setValueForAtoms(gm);
                                     gv.numPoints = gm.getAtomRingSize();
-                                    //gv.centerPoint.reset(gm.getCenterValue());
 
                                     gv.insideCircle.setPointCount(gv.numPoints);
                                     for (int i = 0; i < gv.insideCircle.getPointCount(); i++) {
@@ -407,9 +446,7 @@ int GameController::Run(sf::RenderWindow &window) {
         window.clear(sf::Color::Black);
         window.draw(gv.outsideCircle);
         window.draw(gv.scoreText);
-        // window.draw(insideCircle);
         gv.centerPoint.draw1(window);
-        //centerPoint.draw1(window);
         for (int i = 0; i < gv.atoms.size(); i++) {
 
             gv.atoms[i].draw1(window);

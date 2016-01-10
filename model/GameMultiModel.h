@@ -13,8 +13,8 @@ class GameMultiModel{
 public:
     GameMultiModel(std::string ip, std::string port, boost::asio::io_service &io_service):atomas1{6},atomas2{6},connection{"Mike",2} {
         atomas1.addAtoms(6);
-        //connection.connect(ip, port, io_service);
-        connection.connect("localhost", "6996", io_service);
+        connection.connect(ip, port, io_service);
+        //connection.connect("localhost", "6996", io_service);
         connection.setup();
 
         connection.wait_to_start(atomas1,atomas2);
@@ -105,6 +105,8 @@ public:
             return atomas2;
         }
     }
+
+    //Send data to the server with type is normal
     void send_normal(int index) {
         Data data;
         data.put("index", index);
@@ -114,6 +116,7 @@ public:
         connection.send(data.to_json());
     }
 
+    //Send data to the server with type is minus
     void send_minus(int index) {
         Data data;
         data.put("index", index);

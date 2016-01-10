@@ -20,6 +20,8 @@ public:
         back_to_menu = mv.back_to_menu;
         mode = mv.mode;
     }
+
+    /*This function is used to set the position of every components of the view */
     void setPosition(){
         font1.loadFromFile("libelsuit.ttf");
 
@@ -59,6 +61,10 @@ public:
 
     }
 
+    /*
+     * This function is used for the multi mode only
+     * state is used to know the player is win or lose
+     * */
     void setGameState(int state){
         game_state.setFont(font1);
         game_state.setCharacterSize(80);
@@ -78,6 +84,10 @@ public:
 
     }
 
+    /*
+     * The function is used to check if user click into the replay text
+     */
+
     bool inReplayText(int x, int y){
         bool result;
         sf::FloatRect replayRect = replay.getLocalBounds();
@@ -87,6 +97,11 @@ public:
                   && (y >= (replay.getPosition().y - replayRect.height/2.0f)) && (y <= (replay.getPosition().y + replayRect.height/2.0f)));
         return result;
     }
+
+    /*
+    * The function is used to check if user click into the back to menu text
+    */
+
 
     bool inBackMenuText(int x, int y){
         bool result;
