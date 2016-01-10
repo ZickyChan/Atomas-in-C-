@@ -28,4 +28,10 @@ For reasons unknown, a client may suddenly go into an non-stop infinite loop as 
 
 ### Notes ###
 
+Initially, it was believed that the game logic portion was relatively simple, however, complex manipulation of and comparisons between elements of a double linked list proved to be more difficult than imagined. Several strategies were implemented to help simplify these operations, though the implementation of these strategies also proved to be challenging.
+
+The AtomRing class itself implements many of the necessary functions for basic manipulations of a double linked list. However, in order to maintain the code's readability, the more complex game-specific manipulations of the AtomRing reside in functions belonging to the Atomas class, which contains an instance of an AtomRing object. A similar strategy was employed for the implementation of <boost> library services such as sockets and threads.
+
 Due to the nature of double linked lists, it is difficult to have a permanent root node as a reference point. In order to resolve this problem, the use of an additional variable (int index) was used keep track of the relative location of the current root atom. This solved many issues as it allowed for easy location of the atom at index = 0, regardless what the current root atom was pointing at.
+
+The server logic was written to allow two or more players to participate in a given game against each other. Such functionality still theoretically exists (specifically in the WaitList class), however, due to the unexpected complexity of the game logic, the client program has been written to restrict multiplayer games to two players only.
