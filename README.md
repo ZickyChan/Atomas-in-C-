@@ -16,7 +16,7 @@ To setup the server or client, open project using Clion. This project has been t
 
 In order to run the server or client, first click "Run"->"Edit Configurations" in the file menu bar. Click on "Application" in the sidebar and for "Target:" choose "atomas_server" and click "OK". The project can now be compiled and run using Clion.
 
-To start a multiplayer game, the interface will prompt the user to enter a port and IP address. For convenience, please use localhost as IP. The server is currently coded to run on port 6996.
+To start a multiplayer game, the interface will prompt the user to enter a port and IP address. For convenience, please use localhost as IP. The server is currently coded to run on port 6996. We haven't provided the function to check IP and Port so the correct IP and Port must be entered.
 
 If your machine haven't had the boost library and sfml library, you should install them to run our game (I can't remember that boost is automatically installed in the virtual or not, but the sfml should be installed manually by this: sudo apt-get install libsfml-dev)
 
