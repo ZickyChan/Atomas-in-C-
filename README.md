@@ -32,6 +32,8 @@ Due to unresolvable issues, the multiplayer game option is incomplete. Currently
 
 For reasons unknown, a client may suddenly go into an non-stop infinite loop as it attempts to read from the server and a likely EOF value is returned. It is suspected that this is due to the TCP connection breaking, as normally, a call to the read function in the client is synchronous, as such it waits for the server to send data before returning. This would not be possible if connected to the server, as the server does not send continuous data to clients (the server waits for messages from clients and forwards them on to other players). This issue was unable to be resolved, and it is possible that it is an issue with the internet connection and not entirely due to the code.
 
+The stability of the server is currently quite volatile. This is due to the team's unfamiliarity with the boost library and its features and the complexity of having multiple threads running on multiple clients and the server. Despite the use of TCP, there was no easy way to ensure connection was not broken, thus making it difficult to complete this portion of the project fully.
+
 ### Notes ###
 
 Initially, it was believed that the game logic portion was relatively simple, however, complex manipulation of and comparisons between elements of a double linked list proved to be more difficult than imagined. Several strategies were implemented to help simplify these operations, though the implementation of these strategies also proved to be challenging.
