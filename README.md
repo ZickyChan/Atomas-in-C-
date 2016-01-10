@@ -12,8 +12,6 @@ To setup the server or client, open project using Clion. This project has been t
 
 In order to run the server or client, first click "Run"->"Edit Configurations" in the file menu bar. Click on "Application" in the sidebar and for "Target:" choose "atomas_server" and click "OK". The project can now be compiled and run using Clion.
 
-### Contribution guidelines ###
-
 ### How to Play ###
 
 To play a single player game, the server does not need to be running. Run the client program from Clion, and when the game interface window opens, click on "1 Player".
