@@ -22,7 +22,7 @@ A ring of atoms will appear on the screen with the player's atom appearing in th
 
 ### Known Issues ###
 
-Due to time constraints, the multiplayer game option is incomplete. Currently, the multiplayer allows for two players to play, with each player being able to view the other player's ring, but there is no interaction between the individual games.
+Due to unresolvable issues, the multiplayer game option is incomplete. Currently, the multiplayer allows for two players to play, with each player being able to view the other player's ring, but there is no interaction between the individual games.
 
 Due to the nature of double linked list, it is difficult to have a permanent root node as a reference point. In order to resolve this problem, the use of an additional variable (int index) was used keep track of the relative location of the current root atom. This solved many issues as it allowed for easy location of the atom at index = 0, regardless what the current root atom was pointing at. However, complications arose from the deletion and addition of atoms to/from the ring, which caused the index value to be unreliable. Attempts to resolve all of these issues have not been entirely successful, thus unexpected bugs may appear during gameplay.
 
