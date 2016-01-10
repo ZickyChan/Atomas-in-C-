@@ -14,7 +14,7 @@ public:
     GameMultiModel(std::string ip, std::string port, boost::asio::io_service &io_service):atomas1{6},atomas2{6},connection{"Mike",2} {
         atomas1.addAtoms(6);
         //connection.connect(ip, port, io_service);
-        connection.connect("192.168.1.25", "6996", io_service);
+        connection.connect("localhost", "6996", io_service);
         connection.setup();
 
         connection.wait_to_start(atomas1,atomas2);
