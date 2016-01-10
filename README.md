@@ -2,6 +2,10 @@
 
 This project was completed by Tran Thach Thao, s3494528 and Bui Viet Phuong, s3463064.
 
+### Description ###
+
+The goal of the project was to create a clone of a popular puzzle game Atomas, with the addition of online multiplayer functionality.
+
 ### What is this repository for? ###
 
 This repository contains the Client for playing a single or multiplayer game of Atomas.
