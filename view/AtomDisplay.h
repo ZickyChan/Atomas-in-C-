@@ -119,10 +119,8 @@ public:
 
 
     void reset(int val){
-        cout << "BEFORE: " << value << endl;
         value = val;
         setColor();
-        cout << "After: " << value << endl;
     }
 
     int getValue(){

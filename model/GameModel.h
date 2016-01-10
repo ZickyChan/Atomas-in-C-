@@ -19,7 +19,7 @@ public:
     }
 
     int getAtomValue(int index){
-        Atom *temp = atomas.get_index_atom(index);
+        Atom *temp = atomas.getRing().get_atom_pointer(index);
         return temp->atom;
     }
 
@@ -27,9 +27,6 @@ public:
         return atomas.getPlayerAtom();
     }
 
-    int getCurrentIndex(){
-        return atomas.getCurrentIndex();
-    }
 
     void deleteAtom(int index){
         atomas.deleteAtom(index);
@@ -40,15 +37,11 @@ public:
     }
 
     void Print(){
-        atomas.printGame();
+        atomas.print();
     }
 
-    void forward(){
-        atomas.forward();
-    }
-
-    int check_proton(){
-        return atomas.check_proton();
+    int check_proton(int index){
+        return atomas.check_proton(index);
     }
 
     int getScore(){
@@ -62,13 +55,15 @@ public:
     AtomRing& getRing(){
         return atomas.getRing();
     }
-
+    int findProton(){
+        return atomas.find_proton();
+    }
     void restart(){
         Atomas a{6};
-        a.printGame();
+        //a.printGame();
         atomas = a;
         atomas.addAtoms(6);
-        atomas.printGame();
+        //atomas.printGame();
     }
 private:
     Atomas atomas;

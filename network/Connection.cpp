@@ -1,4 +1,5 @@
 #include "Connection.h"
+#include "../game/Atomas.h"
 
 const int max_size = 1024;
 
@@ -50,7 +51,7 @@ void Connection::wait_to_start(Atomas &player, Atomas &opponent) {
     for (int i = 0; i < count; i++) {
         int id = stoi(start.get(to_string(i)));
         if (this_id != id) {
-            opponent.set_player_id(id);
+            opponent.setId(id);
         }
     }
 
@@ -66,14 +67,14 @@ void Connection::wait_to_start(Atomas &player, Atomas &opponent) {
 
     stringstream atom_stream;
     stringstream player_atom_stream;
-    atom_stream << opponent.get_player_id() << ".atom";
-    player_atom_stream << opponent.get_player_id() << ".player_atom";
+    atom_stream << opponent.getId() << ".atom";
+    player_atom_stream << opponent.getId() << ".player_atom";
 
     Data atoms = setup.get_child(atom_stream.str());
     int player_atom = stoi(setup.get(player_atom_stream.str()));
 
 
     opponent.add_atoms(atoms);
-    opponent.printGame();
+    opponent.print();
 }
 

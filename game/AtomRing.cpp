@@ -1,12 +1,15 @@
-//
-// Created by bit on 1/6/16.
-//
-
 #include "AtomRing.h"
 
-#include "AtomRing.h"
+bool free_atom(Atom *atom) {
+    if (atom->isotope > 0) {
+        atom->isotope--;
+        return false;
+    }
+    delete atom;
+    return true;
+}
 
-int AtomRing::getMaxAtom() {
+int AtomRing::get_max_atom() {
     int max = 0;
     Atom *current = atom;
     for (int i = 0; i < size; i++) {
@@ -17,94 +20,80 @@ int AtomRing::getMaxAtom() {
     return max;
 }
 
-void AtomRing::addAtom(Atom *atom) {
-    if (this->atom == nullptr) {
+void AtomRing::add_atom(int index, Atom *atom) {
+    if (size == 0) {
         this->atom = atom;
+        size++;
     }
-    else if (this->atom->next == nullptr) {
+    else if (size == 1) {
         this->atom->next = atom;
         this->atom->last = atom;
-        atom->last = this->atom;
         atom->next = this->atom;
+        atom->last = this->atom;
+        size++;
+
     }
     else {
+        move_to_index(index);
         atom->last = this->atom;
         atom->next = this->atom->next;
         this->atom->next->last = atom;
         this->atom->next = atom;
-
+        size++;
     }
-    size++;
-    forward();
 }
 
-void AtomRing::addAtom(int value) {
+void AtomRing::add_atom(int index, int value, int isotope) {
     Atom *atom = new Atom();
     atom->atom = value;
+    atom->isotope = isotope;
     atom->next = nullptr;
     atom->last = nullptr;
-    addAtom(atom);
+    atom->isotope = isotope;
+    add_atom(index, atom);
 }
 
-int AtomRing::deleteAtom() {
-    int index = -2;
-    if (forward()) {
-        index = atom->atom;
-        if (atom->next->next != atom) {
-            atom->last->last->next = atom;
-            Atom *temp = atom->last;
-            atom->last = atom->last->last;
-            free(temp);
+bool AtomRing::delete_atom(int index) {
+    if (size == 0) {
+        cout << "ATOM NOT DELETED1" << endl;
+        return false;
+    }
+    if (size == 1) {
+        if (free_atom(atom)) {
+            atom = nullptr;
+            size--;
+            return true;
         }
-        else {
-            free(atom->next);
+        cout << "ATOM NOT DELETED2" << endl;
+        return false;
+    }
+    if (size == 2) {
+        move_to_index(index);
+        back();
+        if (free_atom(atom->next)) {
             atom->next = nullptr;
             atom->last = nullptr;
+            this->index = 0;
+            size--;
+            return true;
         }
+        cout << "ATOM NOT DELETED3" << endl;
+        return false;
+    }
+    move_to_index(index);
+    back();
+    Atom *temp = atom->next->next;
+    if (free_atom(atom->next)) {
+        atom->next = temp;
+        temp->last = atom;
+        if (index == 0)
+            decrement_index();
         size--;
+        return true;
     }
-    return index;
+    cout << "ATOM NOT DELETED4" << endl;
+    return false;
 }
-
-int AtomRing::deleteLastAtom() {
-    if (back()) {
-        return deleteAtom();
-    }
-    return NULL_ATOM;
-}
-
-int AtomRing::deleteNextAtom() {
-    int index = NULL_ATOM;
-    if (forward()) {
-        index = atom->atom;
-        deleteAtom();
-        back();
-    }
-    return index;
-}
-
-//void AtomRing::deleteAtomLastNext() {
-//    if (atom->next->next == atom->last->last) {
-//        free(atom->next);
-//        free(atom->last);
-//        atom->next = nullptr;
-//        atom->last = nullptr;
-//    }
-//    else {
-//        Atom *atom = this->atom->last;
-//        if (atom != nullptr) {
-//            atom->next->last = atom->last;
-//            atom->last->next = atom->next;
-//            free(atom);
-//        }
-//        atom = this->atom->next;
-//        if (atom != nullptr) {
-//            atom->next->last = atom->last;
-//            atom->last->next = atom->next;
-//            free(atom);
-//        }
-//    }
-//}
 
 bool AtomRing::forward() {
     if (atom->next != nullptr) {
@@ -124,53 +113,33 @@ bool AtomRing::back() {
     return false;
 }
 
-void AtomRing::printRing() {
-    if (atom != nullptr) {
-        Atom *current = atom;
-        cout << "Ring: ";
-        for (int i = 0; i < size; i++) {
-            if (atom == current)
-                cout << "*" << current->atom << "* ";
-            else
-                cout << current->atom << " ";
-            current = current->next;
-        }
-        cout << endl;
+void AtomRing::print() {
+    move_to_index(0);
+    Atom *current = atom;
+    cout << "Ring: ";
+    for (int i = 0; i < size; i++) {
+        cout << current->atom << " ";
+        current = current->next;
     }
-}
-
-int AtomRing::getAtom(int index) {
-    move_to_index(index);
-    return atom->atom;
+    cout << endl;
 }
 
 void AtomRing::move_to_index(int index) {
-    while (index < 0)
+    while (index < 0) {
         index += size;
+    }
     index = index % size;
-
-    if (index > size - 1 || size < 2)
-        return;
-
     int count = this->index - index;
     if (count < 0)
-        for (int i = count; i != 0; i++) {
+        for (int i = count; i != 0; i++)
             forward();
-
-        }
     else if (count > 0)
-        for (int i = count; i != 0; i--) {
+        for (int i = count; i != 0; i--)
             back();
-        }
     this->index = index;
 }
 
-void AtomRing::add_atom(int index, int value, int isotope) {
-    move_to_index(index);
-    Atom *atom = new Atom();
-    atom->atom = value;
-    atom->isotope = isotope;
-    atom->next = nullptr;
-    atom->last = nullptr;
-    addAtom(atom);
+void AtomRing::add_atoms_from_data(Data data) {
+
 }
+

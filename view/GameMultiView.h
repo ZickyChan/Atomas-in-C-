@@ -56,7 +56,7 @@ public:
 
     void addAtomDisplay(Atomas &a){
         cout << atoms.size();
-        Atom *atom = a.get_index_atom(0);
+        Atom *atom = a.getRing().get_atom_pointer(0);
         if(atoms.size() == 0) {
             for (int i = 0; i < a.getRingSize(); i++) {
                 AtomDisplay shape{atom->atom, 20};

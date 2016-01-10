@@ -1,8 +1,9 @@
-#ifndef ATOMAS_ATOMRING_H
-#define ATOMAS_ATOMRING_H
+#ifndef ATOMAS_CLIENT_ATOMRING_H
+#define ATOMAS_CLIENT_ATOMRING_H
 
 
 #include <iostream>
+#include "../network/Data.h"
 
 #define NULL_ATOM -10
 
@@ -16,65 +17,54 @@ typedef struct atom {
     struct atom *last;
 } Atom;
 
+bool free_atom(Atom *atom);
+
 class AtomRing {
 public:
-    AtomRing() {
-        atom = nullptr;
-        size = 0;
-    }
-
-    AtomRing(AtomRing &ar){
-        atom = ar.atom;
-        size = ar.size;
-    }
+    AtomRing(): atom{nullptr}, size{0}, index{0} {}
 
     int get_size() {
         return size;
     }
 
-    Atom *get_atom() {
-        return atom;
+    int get_index(){
+        return index;
     }
 
-    void setAtom(int index) {
-        atom->atom = index;
+    int get_atom(int index) {
+        move_to_index(index);
+        return atom->atom;
     }
 
-    void addToAtom(int delta) {
+    void set_atom(int index, int value) {
+        move_to_index(index);
+        atom->atom = value;
+    }
+
+    void addToAtom(int index, int delta) {
+        move_to_index(index);
         atom->atom += delta;
     }
 
-    int getMaxAtom();
+    int get_max_atom();
 
-    void addAtom(Atom *atom);
+    void add_atom(int index, int value, int isotope);
 
-    void addAtom(int value);
+    bool delete_atom(int index);
 
-    int deleteAtom();
+    void print();
 
-    int deleteLastAtom();
+    void add_atoms_from_data(Data data);
 
-    int deleteNextAtom();
 
-    void deleteAtomLastNext();
+    Atom *get_atom_pointer(int index) {
+        move_to_index(index);
+        return atom;
+    }
 
     bool forward();
 
     bool back();
-
-    void printRing();
-
-    int getAtom(int index);
-
-    void add_atom(int index, int value, int isotope);
-
-    void move_to_index(int index);
-
-private:
-    Atom *atom;
-    int size;
-    int index;
-
 
     void increment_index() {
         index = (index + 1) % size;
@@ -83,6 +73,19 @@ private:
     void decrement_index() {
         index = (index - 1 + size) % size;
     }
+
+    void move_to_index(int index);
+
+
+private:
+    Atom *atom;
+    int size;
+    int index;
+
+    void add_atom(int index, Atom *atom);
+
+
 };
 
-#endif //ATOMAS_ATOMRING_H
+
+#endif //ATOMAS_CLIENT_ATOMRING_H

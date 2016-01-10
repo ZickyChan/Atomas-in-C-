@@ -11,6 +11,7 @@
 #include "Controller.h"
 #include "../view/GameOverView.h"
 #include "GameOverController.h"
+#include "../game/Atomas.h"
 
 //This equation is used to find the roots of the quadratic equation and return a pointer of integer results
 //The equation is ax^2 + bx + c =0, type is used to identify Y or X value will be return
@@ -60,20 +61,24 @@ public:
     }
 
     void checkAtoms(sf::RenderWindow &window){
-
-        int count = gm.getAtomRingSize();
-        while (count > 0) {
-            if (gm.getRing().get_atom()->atom == PROTON) {
-                int index = gm.getCurrentIndex();
-                int remove = gm.check_proton();
-                count -= remove;
-                sf::Transform t1;
-                sf::Transform t2;
-                for (int i=1;i<= (remove/2);i++){
-                        float angle = calculateAngle(gv.atoms[(index + i)%gv.atoms.size()],gv.atoms[index],150);
+        int index = 0;
+        int combo = 0;
+        while (index < gm.getRing().get_size()) {
+            if (gm.getRing().get_atom(index) == PROTON) {
+                combo = gm.check_proton(index);
+                cout << "index: " << index << endl;
+                cout << "value: " << gm.getRing().get_atom_pointer(index)->atom << endl;
+                cout << "combo: " << combo << endl;
+                if (combo > 0) {
+                    cout << "proton position: " << index << endl;
+                    cout << "combo?: " << gm.check_proton(index);
+                    sf::Transform t1;
+                    sf::Transform t2;
+                    for (int i = 1; i <= (combo); i++) {
+                        float angle = calculateAngle(gv.atoms[(index + i) % gv.atoms.size()], gv.atoms[index], 150);
                         int step = 0;
-                        while (true){
-                            if( angle <= step ){
+                        while (true) {
+                            if (angle <= step) {
                                 break;
                             }
 
@@ -81,15 +86,15 @@ public:
                             gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].getCirclePosition().x < gv.atoms[index].getCirclePosition().x*/
                             window.clear(sf::Color::Black);
 
-                            t1.rotate(2.0, { 500,364 });
-                            t2.rotate(-2.0, { 500,364 });
+                            t1.rotate(2.0, {500, 364});
+                            t2.rotate(-2.0, {500, 364});
 
                             //gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].ro
-                            if((gv.atoms[index].getCirclePosition().y+194)>344) {
+                            if ((gv.atoms[index].getCirclePosition().y + 194) > 344) {
                                 gv.atoms[(index + i) % gv.atoms.size()].draw(window, t2);
                                 gv.atoms[(index - i + gv.atoms.size()) % gv.atoms.size()].draw(window, t1);
                             }
-                            else{
+                            else {
                                 gv.atoms[(index + i) % gv.atoms.size()].draw(window, t1);
                                 gv.atoms[(index - i + gv.atoms.size()) % gv.atoms.size()].draw(window, t2);
                             }
@@ -97,7 +102,8 @@ public:
                             window.draw(gv.scoreText);
                             gv.centerPoint.draw1(window);
                             for (int j = 0; j < gv.atoms.size(); j++) {
-                                if(j != ((index + i)%gv.atoms.size()) && j != (index - i + gv.atoms.size())%gv.atoms.size() ) {
+                                if (j != ((index + i) % gv.atoms.size()) &&
+                                    j != (index - i + gv.atoms.size()) % gv.atoms.size()) {
                                     gv.atoms[j].draw1(window);
                                 }
 
@@ -105,11 +111,13 @@ public:
                             }
 
                             window.display();
-                            step += i+1;
+                            step += i + 1;
                         }
                         gv.setValueForScoreText(gm.getScore());
-                        gv.atoms[(index + i)%gv.atoms.size()].setPosition(gv.atoms[index].getCirclePosition().x,gv.atoms[index].getCirclePosition().y);
-                        gv.atoms[(index - i + gv.atoms.size())%gv.atoms.size()].setPosition(gv.atoms[index].getCirclePosition().x,gv.atoms[index].getCirclePosition().y);
+                        gv.atoms[(index + i) % gv.atoms.size()].setPosition(gv.atoms[index].getCirclePosition().x,
+                                                                            gv.atoms[index].getCirclePosition().y);
+                        gv.atoms[(index - i + gv.atoms.size()) % gv.atoms.size()].setPosition(
+                                gv.atoms[index].getCirclePosition().x, gv.atoms[index].getCirclePosition().y);
                         window.clear(sf::Color::Black);
                         window.draw(gv.outsideCircle);
                         window.draw(gv.scoreText);
@@ -125,22 +133,28 @@ public:
                         window.display();
 
 
-                }
+                    }
 
-                for (int i = remove;remove > 0;remove--){
-                    gv.atoms.pop_back();
+                    for (int i = gv.atoms.size(); i > gm.getAtomRingSize(); i--) {
+                        gv.atoms.pop_back();
+                    }
+                    gv.insideCircle.setPointCount(gm.getAtomRingSize());
+                    gv.setValueForAtoms(gm);
+                    for (int i = 0; i < gv.insideCircle.getPointCount(); i++) {
+                        sf::Vector2f position = gv.insideCircle.getPoint(i);
+                        gv.atoms[i].setPosition(position.x + 330, position.y + 194);
+                        //gv.atoms[i].draw1(window);
+                    }
+                    index = 0;
+                    combo = 0;
                 }
-                gv.insideCircle.setPointCount(gm.getAtomRingSize());
-                gv.setValueForAtoms(gm);
-                for (int i = 0; i < gv.insideCircle.getPointCount(); i++) {
-                    sf::Vector2f position = gv.insideCircle.getPoint(i);
-                    gv.atoms[i].setPosition(position.x + 330, position.y + 194);
-                    //gv.atoms[i].draw1(window);
+                else{
+                    index++;
                 }
             }
-
-            gm.forward();
-            count--;
+            else{
+                index++;
+            }
         }
         gm.setNewCenterValue();
     }
@@ -248,7 +262,6 @@ int GameController::Run(sf::RenderWindow &window) {
                                         }
                                     }
                                     else {
-                                        cout << "equal " << endl;
                                         if (event.mouseButton.x <= (gv.insideCircle.getPoint(i).x + 330) &&
                                             event.mouseButton.x >= (gv.insideCircle.getPoint(i + 1).x + 330)
                                             && valY >= (gv.insideCircle.getPoint(i).y + 194)) {
@@ -270,7 +283,6 @@ int GameController::Run(sf::RenderWindow &window) {
                                     }
 
                                 }
-                                cout << "end loop " << endl;
                             }
 
                             if(gv.position_insert != -2) {
@@ -278,9 +290,7 @@ int GameController::Run(sf::RenderWindow &window) {
                             gv.centerPoint.setDisappear();
 
                             if (gv.position_insert > -1) {
-                                cout << "inserting " << endl;
                                 gv.atoms.insert(gv.atoms.begin() + gv.position_insert, temp);
-                                cout << "modifying atom" << endl;
                                 gm.addAtomToRing(gv.position_insert - 1);
                             }
                             else if (gv.position_insert == -1) {
@@ -356,6 +366,7 @@ int GameController::Run(sf::RenderWindow &window) {
                                 return goc.Run(window);
                             }
                             cout << "done" << endl;
+                            gm.Print();
                         }
                     }
                     else if (gv.centerPoint.getValue() == -1) {

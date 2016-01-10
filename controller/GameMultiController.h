@@ -25,16 +25,19 @@ public:
     }
 
     void checkAtoms(sf::RenderWindow &window){
-
-        int count = gm.getAtomRingSize();
-        while (count > 0) {
-            if (gm.getRing().get_atom()->atom == PROTON) {
-                int index = gm.getCurrentIndex();
-                int remove = gm.check_proton();
-                count -= remove;
+        int index = 0;
+        int count;
+        while (index >= 0) {
+            index = gm.findProton();
+            count = gm.getAtomRingSize();
+            if (gm.getRing().get_atom_pointer(index)->atom == PROTON) {
+                cout << "proton position: " << index << endl;
+                cout << "combo?: " << gm.check_proton(index);
+                int combo = gm.check_proton(index);
+                count -= combo*2;
                 sf::Transform t1;
                 sf::Transform t2;
-                for (int i=1;i<= (remove/2);i++){
+                for (int i=1;i<= combo;i++){
                     float angle = calculateAngle(gv1.atoms[(index + i)%gv1.atoms.size()],gv1.atoms[index],150);
                     int step = 0;
                     while (true){
@@ -92,7 +95,7 @@ public:
 
                 }
 
-                for (int i = remove;remove > 0;remove--){
+                for (int i = combo*2;i > 0;i--){
                     gv1.atoms.pop_back();
                 }
                 gv1.insideCircle.setPointCount(gm.getAtomRingSize());
@@ -104,7 +107,6 @@ public:
                 }
             }
 
-            gm.forward();
             count--;
         }
         gm.setNewCenterValue();
