@@ -83,9 +83,17 @@ public:
 
     }
 
-    void setValueForAtoms(GameMultiModel &gm){
-        for (int i=0;i<gm.getAtomRingSize();i++) {
-            atoms[i].reset(gm.getAtomValue(i));
+    void setValueForAtoms(GameMultiModel &gm, int mode){
+        if(mode == 1) {
+            for (int i = 0; i < gm.getAtomRingSize(); i++) {
+                atoms[i].reset(gm.getAtomValue(i));
+                cout << "each value of ring: " << gm.getAtomValue(i) << endl;
+            }
+        }
+        else{
+            for (int i = 0; i < gm.getAtomRing2Size(); i++) {
+                atoms[i].reset(gm.getAtomValue2(i));
+            }
         }
     }
 //

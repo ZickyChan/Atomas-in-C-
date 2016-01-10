@@ -60,10 +60,8 @@ public:
     }
     void restart(){
         Atomas a{6};
-        //a.printGame();
         atomas = a;
         atomas.addAtoms(6);
-        //atomas.printGame();
     }
 private:
     Atomas atomas;

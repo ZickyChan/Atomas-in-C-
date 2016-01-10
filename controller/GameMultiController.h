@@ -31,12 +31,7 @@ public:
         while (index < gm.getRing().get_size()) {
             if (gm.getRing().get_atom(index) == PROTON) {
                 combo = gm.check_proton(index);
-                cout << "index: " << index << endl;
-                cout << "value: " << gm.getRing().get_atom_pointer(index)->atom << endl;
-                cout << "combo: " << combo << endl;
                 if (combo > 0) {
-                    cout << "proton position: " << index << endl;
-                    cout << "combo?: " << gm.check_proton(index);
                     sf::Transform t1;
                     sf::Transform t2;
                     for (int i = 1; i <= (combo); i++) {
@@ -96,7 +91,7 @@ public:
                         gv1.atoms.pop_back();
                     }
                     gv1.insideCircle.setPointCount(gm.getAtomRingSize());
-                    gv1.setValueForAtoms(gm);
+                    gv1.setValueForAtoms(gm,1);
                     for (int i = 0; i < gv1.insideCircle.getPointCount(); i++) {
                         sf::Vector2f position = gv1.insideCircle.getPoint(i);
                         gv1.atoms[i].setPosition(position.x + 80, position.y + 194);
@@ -114,6 +109,10 @@ public:
             }
         }
         gm.setNewCenterValue();
+
+        cout << endl << endl << endl;
+        cout << "RING 1 IS :    " <<endl;
+        gm.print();
     }
 
     void thread_function() {
@@ -133,23 +132,74 @@ public:
 
                 if (gv2.position_insert > -1) {
                     gv2.atoms.insert(gv2.atoms.begin() + gv2.position_insert, temp);
-                    gm.addAtomToRing(gv2.position_insert - 1);
+                    gm.addAtomToRing2(gv2.position_insert - 1);
                 }
                 else if (gv2.position_insert == -1) {
                     gv2.atoms.push_back(temp);
-                    gm.addAtomToRing(gm.getAtomRing2Size() - 1);
+                    gm.addAtomToRing2(gm.getAtomRing2Size() - 1);
                 }
 
                 gv2.insideCircle.setPointCount(gm.getAtomRing2Size());
                 for (int i = 0; i < gv2.insideCircle.getPointCount(); i++) {
                         sf::Vector2f position = gv2.insideCircle.getPoint(i);
-                        gv2.atoms[i].setPosition(position.x + 80, position.y + 194);
+                        gv2.atoms[i].setPosition(position.x + 80 + gv2.offsetX, position.y + 194);
                 }
 
-
+                gm.setNewCenterValue(new_atom);
                 gv2.centerPoint.reset(new_atom);
 
+                gm.print2();
 
+
+                index = 0;
+                int combo = 0;
+                while (index < gm.getRing2().get_size()) {
+                    if (gm.getRing2().get_atom(index) == PROTON) {
+                        combo = gm.check_proton2(index);
+                        if(combo > 0) {
+                            for (int i = combo * 2; i > 0; i--) {
+                                gv2.atoms.pop_back();
+                            }
+                            gv2.insideCircle.setPointCount(gm.getAtomRing2Size());
+                            gv2.setValueForAtoms(gm,2);
+                            for (int i = 0; i < gv2.insideCircle.getPointCount(); i++) {
+                                sf::Vector2f position = gv2.insideCircle.getPoint(i);
+                                gv2.atoms[i].setPosition(position.x + 80 + gv2.offsetX, position.y + 194);
+                            }
+                            index = 0;
+                            combo = 0;
+                        }
+                        else{
+                            index++;
+                        }
+                    }
+                    else{
+                        index++;
+                    }
+                }
+
+                cout << endl << endl << "RING 2 IS:    " << endl;
+                gm.print2();
+
+
+            }
+            else if(type == "minus"){
+                int index = stoi(data.get("index"));
+                int new_atom = stoi(data.get("new atom"));
+                gm.deleteAtom2(index);
+                gv2.atoms.pop_back();
+                gv2.setValueForAtoms(gm,2);
+                gv2.numPoints = gm.getAtomRing2Size();
+                //gv.centerPoint.reset(gm.getCenterValue());
+
+                gv2.insideCircle.setPointCount(gv2.numPoints);
+                for (int i = 0; i < gv2.insideCircle.getPointCount(); i++) {
+                    sf::Vector2f position = gv2.insideCircle.getPoint(i);
+                    gv2.atoms[i].setPosition(position.x + 80 + gv2.offsetX, position.y + 194);
+
+                }
+                gm.setNewCenterValue(new_atom);
+                gv2.centerPoint.reset(new_atom);
             }
         }while(type != "END");
     }
@@ -377,7 +427,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 std::pow(gv1.atoms[i].getCircleRadius(), 2)) {
                                 gm.deleteAtom(i);
                                 gv1.atoms.pop_back();
-                                gv1.setValueForAtoms(gm);
+                                gv1.setValueForAtoms(gm,1);
                                 gv1.numPoints = gm.getAtomRingSize();
                                 //gv.centerPoint.reset(gm.getCenterValue());
 
@@ -389,6 +439,7 @@ int GameMultiController::Run(sf::RenderWindow &window) {
                                 }
                                 checkAtoms(window);
                                 gv1.centerPoint.reset(gm.getCenterValue());
+                                gm.send_minus(i);
                                 break;
                             }
                         }

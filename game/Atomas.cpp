@@ -71,18 +71,18 @@ int Atomas::check_proton(int index) {
         int back_value = ring.get_atom(index - 1);
         int forward_value = ring.get_atom(index + 1);
         int value = ring.get_atom(index);
-        if (back_value == forward_value) {
+        if (back_value == forward_value && back_value > 0) {
             combo++;
             score += back_value*2;
-            if (value < back_value)
+
+            if (value  == 0)
                 ring.set_atom(index, back_value);
             ring.addToAtom(index, 1);
-            cout << ring.get_atom(index);
+            cout << "new value of atom: " << ring.get_atom(index) << endl;
             bool forward_deleted = ring.delete_atom(index + 1);
             bool backward_deleted = ring.delete_atom(index - 1);
             print();
             if (forward_deleted && backward_deleted) {
-                cout << "CHECKING AGAIN";
                 if (index > 0)
                     index--;
                 combo += check_proton(index);

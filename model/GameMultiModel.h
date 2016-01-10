@@ -34,6 +34,11 @@ public:
         return temp->atom;
     }
 
+    int getAtomValue2(int index){
+        Atom *temp = atomas2.getRing().get_atom_pointer(index);
+        return temp->atom;
+    }
+
     int getCenterValue(){
         //cout << " value: " << atomas1.getPlayerAtom() << endl;
         return atomas1.getPlayerAtom();
@@ -44,6 +49,10 @@ public:
         atomas1.deleteAtom(index);
     }
 
+    void deleteAtom2(int index){
+        atomas2.deleteAtom(index);
+    }
+
     void addAtomToRing(int index){
         atomas1.player_to_ring(index);
     }
@@ -51,14 +60,13 @@ public:
         atomas2.player_to_ring(index);
     }
 
-    void Print(){
-       // atomas1.printGame();
-    }
-
-
 
     int check_proton(int index){
         return atomas1.check_proton(index);
+    }
+
+    int check_proton2(int index){
+        return atomas2.check_proton(index);
     }
 
     int getScore(){
@@ -69,8 +77,16 @@ public:
         atomas1.replace_player_atom();
     }
 
+    void setNewCenterValue(int val){
+        atomas2.replace_player_atom(val);
+    }
+
     AtomRing& getRing(){
         return atomas1.getRing();
+    }
+
+    AtomRing& getRing2(){
+        return atomas2.getRing();
     }
 
     void restart(){
@@ -97,8 +113,23 @@ public:
         data.put("id",connection.connection_id());
         connection.send(data.to_json());
     }
+
+    void send_minus(int index) {
+        Data data;
+        data.put("index", index);
+        data.put("new atom",getCenterValue());
+        data.put("type","minus");
+        data.put("id",connection.connection_id());
+        connection.send(data.to_json());
+    }
     std::string read(){
         return connection.read();
+    }
+    void print(){
+        atomas1.print();
+    }
+    void print2(){
+        atomas2.print();
     }
 
 private:

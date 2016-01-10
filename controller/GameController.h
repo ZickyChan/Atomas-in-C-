@@ -63,15 +63,12 @@ public:
     void checkAtoms(sf::RenderWindow &window){
         int index = 0;
         int combo = 0;
+        cout << "checking atom" << endl;
         while (index < gm.getRing().get_size()) {
             if (gm.getRing().get_atom(index) == PROTON) {
                 combo = gm.check_proton(index);
-                cout << "index: " << index << endl;
-                cout << "value: " << gm.getRing().get_atom_pointer(index)->atom << endl;
                 cout << "combo: " << combo << endl;
                 if (combo > 0) {
-                    cout << "proton position: " << index << endl;
-                    cout << "combo?: " << gm.check_proton(index);
                     sf::Transform t1;
                     sf::Transform t2;
                     for (int i = 1; i <= (combo); i++) {
